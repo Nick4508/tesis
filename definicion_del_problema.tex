@@ -1,30 +1,85 @@
 \secnumbersection{DEFINICIÓN DEL PROBLEMA}
 
-Se debe definir el problema, es importante no confundir definir el problema con describir la solución. Por ejemplo: ``diseñar una arquitectura e implementar una plataforma ...'' es una solución, no un problema.
+La imagenología médica constituye uno de los pilares fundamentales del diagnóstico clínico moderno, proporcionando herramientas no invasivas para explorar el interior del cuerpo humano. En sus inicios, estas tecnologías se enfocaban exclusivamente en la captura de morfologías anatómicas estáticas. Sin embargo, el continuo desarrollo tecnológico ha impulsado una transición hacia la imagenología funcional, permitiendo no solo observar la estructura de los órganos, sino también cuantificar fenómenos fisiológicos dinámicos y complejos, como la biomecánica de los fluidos.
 
-Algunos elementos que podrían ir en este capítulo son (no es necesario que vayan todos):
+\subsection{4D Flow MRI}
+
+En particular, la técnica de Resonancia Magnética de Flujo en 4 dimensiones (\textit{4D Flow MRI}), permite medir y visualizar la evolución temporal del flujo sanguíneo en diferentes zonas del cuerpo. Esta modalidad obtiene las velocidades de la sangre en un espacio tridimensional a lo largo del ciclo cardíaco (lo que agrega la `cuarta' dimensión). Como la adquisición no está restringida a un solo plano de corte, es posible reconstruir volúmenes completos, volúmenes que serían inalcanzables de conseguir con herramientas bidimensionales. 
+
+La alta resolución espaciotemporal de \textit{4D Flow MRI} facilita la cuantificación de parámetros hemodinámicos avanzados. La densidad de los campos de velocidades adquiridos permite no solo identificar vórtices y turbulencias, sino también calcular métricas biomecánicas complejas sobre la pared vascular, destacando entre ellas el \textit{Wall Shear Stress}.
+
+% IMAGEN DE 4D FLOW MRI
+
+Sin embargo, esta riqueza espaciotemporal trae consigo limitaciones perceptuales y de procesamiento. El análisis tradicional del \textit{4D Flow MRI} está principalmente basado en la exploración visual, dejando de lado vías perceptivas alternativas como lo es la auditiva. Desaprovechar el espectro sonoro omite un canal que históricamente ha sido utilizado para el reconocimiento de patrones temporales, desperdiciando un análisis temporal que complementa de forma natural a la información espacial tridimensional.
+
+\subsection{Ultrasonido}
+
+El \textbf{Ultrasonido de diagnóstico} es la técnica que se fundamenta en la propagación de ondas mecánicas de alta frecuencia (mejor conocidas como ondas ultrasónicas), estas ondas típicamente están en el rango de 2 a 15 MHz, muy por encima del umbral de audición humana. A diferencia de otras técnicas que emplean radiación ionizante o campos magnéticos, el Ultrasonido opera de forma interactiva bajo el principio acústico de pulso-eco. A partir de los ecos generados por el rebote de estas ondas en los diferentes órganos y tejidos, el sistema computacional tiene la capacidad de procesar la profundidad y amplitud de la señal en tiempo real para reconstruir mapas anatómicos en escala de grises. 
+
+Uno de los exámenes más extendidos es la \textbf{ecografía convencial}. Este tipo de examen se realiza con un dispositivo manual llamado transductor, el cual encargado de emitir la ondas ultrasónicas y captar los ecos generados por el rebote de estas en los tejidos. El caso de 
+aplicación más conocido es la ecografía obstétrica, utilizada rutinariamente durante el embarazo para monitorear el desarrollo anatómico del feto de forma segura y no invasiva. Es en este contexto donde se suele introducir la dimensión acústica al exámen, utilizando tecnologías complementarias como lo es el \textbf{Doppler continuo o pulsado} para aislar, amplificar y escuchar el latido cardíaco fetal.
+
+% IMAGEN de ecografía
+
+
+Otro tipo de examen fundamental es el \textbf{ecocardiograma}, la exploración ultrasónica especializada en la evaluación del corazón. En este ámbito, diagnóstico exige evaluar no solo las extructuras anatómicas sólidas, sino tamién la dinámica de fluidos. Si bien la ecografía convencional permite observar la morfología y contracción del músculo cardíaco, esta es incapaz de mostrar la sangre que fluye a través de sus cavidades.
+
+Para superar esta limitación estática, se desarrolló el \textbf{Ultrasonido Doppler}. Esta funcionalidad permite captar el flujo de la sangre en movimiento, empleando el efecto físico del \textit{desplazamiento Doppler} para cuantificar la velocidad y dirección en el torrente sanguíneo. Este fenómeno físico ocurre cuando la onda ultrasónica interactua con los glóbulos rojos en movimiento. Si el flujo sanguíneo se acerca al transductor la frecuencia del eco reflejado resulta mayor que el de la onda emitida originalmente, por otra parte si el flujo se aleja, la frecuencia disminuye. El ecografo es capaz de computar esta diferencia de frecuencias y, tomando en consideración otros parámetros como el sonido impacta el flujo, traduce esta variación en datos de velocidad. 
+
+Dependiendo del procesamiento de la señal y los requerimientos clínicos, la información hemodinámica se presenta a través de diferentes modalidades. El \textit{\textbf{Color Doppler}} es utilizado para una evaluación global y/o escaneo rápido, el cual superpone un mapa de calor codificado típicamente con los colores rojo y azul (regla conocida como \textit{BART}\footnote{\textbf{B}lue \textbf{A}way, \textbf{R}ed \textbf{T}owards}), sobre la imagen anatómica, esto permite visualizar rápidamente la velocidad media y el sentido del flujo sanguíneo. Una variante orientada a la microvasculatura es el \textit{\textbf{Power Doppler}}, este sacrifica la información de la dirección para centrarse únicamente en la amplitud de la señal, permitiendo detectar flujos muy lentos o pequeños que \textit{Color Doppler} no puede detectar.
+
+Cuando el diagnóstico requiere de cuantificaciones más rigurosas, se emplean modalidades espectrales. Por un lado el \textit{\textbf{Continuous Doppler}}, dentro del transductor utiliza diferentes cristales piezoeléctricos dedicados a la emisión y recepción de ondas ultrasónicas. Esto permite medir velocidades altísimas sin límite teórico, pudiendo detectar condiciónes cardíacas como la estenosis, pero con la desventaja de no poder determinar la profundidad exacta del flujo. Con el fin de resolver esta ambigüedad espacial se tiene el \textbf{\textit{Pulsed Wave Doppler}}. Esta técnica alterna secuencialmente entre la emisión y recepción de las ondas ultrasónicas, lo que permite calcular el tiempo de vuelo de la señal acústica y aislar la medición en una profundidad anatómica exacta, lo que permite configurar un \textit{volumen de muestra}. Esta modalidad permite traducir la hemodinámica en un punto específico a un espectrograma y una señal acústica audible en tiempo real, otorgando al médico una retroalimentación tanto visual como auditiva.
+
+% IMAGENES DE DIFERENTES MODOS DE DOPPLER
+
+De esta forma, el Ultrasonido Doppler es el ejemplo de cómo integrar con éxito la retroalimentación sonora en la imagenología. El incorporar el sonido como nueva señal puede facilitar la detección de anomalías en el flujo, marcando así un modelo a seguir. Es el deseo de trasladar este modelo a tecnologías de imagenología que no lo tienen, lo que motiva y explica el estudio y la aplicación de la aplicación sonificación sobre el \textit{4D Flow MRI}.
+
+
+\subsection{Sonificación}
+
+
+La sonificación se define como ``la transformación de relaciones de datos, en relaciones percibidas en una señal acústica, con el propósito de facilitar la comunicación o la interpretación''\cite{kramer1999sonification}. 
+
+
+\subsection{Objetivos}\label{subsection:objetivos}
+\subsubsection{Objetivo General}
+Desarrollar un sistema de sonificación y extracción de características que traduzca datos volumétricos de 4D Flow MRI a descriptores auditivos y cinemáticos, validando estos a través de algoritmos de clasificación.
+\subsubsection{Objetivos específicos}
 \begin{itemize}
-    \item Breve descripción del contexto donde se realizará la memoria (organización, línea dentro de la Informática en la que se basa, etc.)
-    \item ¿Qué y cómo se realiza actualmente la situación que mejorarás con tu memoria?
-    \item ¿Qué actores o usuarios están involucrados?
-    \item ¿Qué dificultades tienen esos actores actualmente? ¿cuántos son? (ideal si se pueden poner estadísticas para así saber si existe un mercado razonable para la solución que propondrás en tu memoria, en el fondo saber cuántas personas u organizaciones tienen el mismo problema que estás definiendo)
-    \item ¿Qué podría pasar si en el corto o mediano plazo no se solucionan esas dificultades (¿es decir, si no se hiciera tu memoria, qué pasaría?; en el fondo justificar por qué conviene hacer tu memoria, ¿cuál es la motivación o interés de hacerla?).
-    \item ¿Qué competencia existe actualmente? (a lo mejor ya existe una solución al problema, pero por qué no sirve, o por qué tu solución sería mejor, también se puede enfocar a si este problema existe en otras realidades y cómo ha sido solucionado allí).
-    \item Precisar los objetivos y alcances de la memoria (o solución al problema).
+    \item Extraer y procesar carácteristicas cinemáticas en el dominio espacial y sintetizar características acústicas a través de la emulación de \textit{Doppler Ultrasound} sobre los datos volumétricos 4D Flow MRI.
+    \item Descubrir y etiquetar zonas anatómicas mediante la aplicación de algoritmos de aprendizaje no supervisado.
+    \item Entrenar y validar modelos de clasificación supervisados para predecir automáticamente la zona anatómica basándose en la huella física y sonora.
+    \item Implementar una interfaz gráfica interactiva que integre el renderizado espacial de un vaso sanguíneo con la sincronización visual y auditiva de los resultados.
 \end{itemize}
 
-En este capítulo, de ser necesario puede usar referencias bibliográficas (velar porque sean recientes), una cita de ejemplo \cite{schwab2002cure} y otras más \cite{georget1994study,beaumont1990patient}.
+% 1.4.1. Objetivo General
+% Desarrollar una metodología computacional y una herramienta de software interactiva que integre la cinemática de datos 4D Flow MRI, la síntesis de señales acústicas y algoritmos de aprendizaje automático para la clasificación automática y exploración visual de zonas hemodinámicas complejas.
 
-Recuerde poner notas al pie de página que sean explicativas \footnote{Este es un ejemplo de una nota al pie de página. Puede indicar alguna URL, definiciones, aclarar alguna información pertinente del texto, citar algunas referencias, etc..}.
+% 1.4.2. Objetivos Específicos
 
-\subsection{SUBSECCIÓN DE PRUEBA}
+% Extraer y procesar características cinemáticas en el dominio espacial y sintetizar características acústicas (emulación Doppler) en el dominio frecuencial a partir de datos volumétricos 4D Flow MRI.
 
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+% Descubrir y etiquetar zonas hemodinámicas anatómicas (flujo laminar, aceleración, núcleo estenótico y turbulencia) mediante la aplicación de algoritmos de aprendizaje no supervisado.
 
-\subsubsection{SUBSUBSECCIÓN DE PRUEBA}
+% Entrenar y validar modelos de clasificación supervisada para predecir automáticamente el comportamiento del fluido basándose en su huella física y sonora.
 
-Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.
+% Diseñar e implementar una interfaz gráfica interactiva que integre el renderizado espacial en 3D del vaso sanguíneo con la sincronización visual y auditiva de los resultados predictivos, facilitando su interpretación clínica.
 
-\subsubsection{OTRA SUBSUBSECCIÓN DE PRUEBA}
 
-Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.
+
+% Se debe definir el problema, es importante no confundir definir el problema con describir la solución. Por ejemplo: ``diseñar una arquitectura e implementar una plataforma ...'' es una solución, no un problema.
+
+% Algunos elementos que podrían ir en este capítulo son (no es necesario que vayan todos):
+% \begin{itemize}
+%     \item Breve descripción del contexto donde se realizará la memoria (organización, línea dentro de la Informática en la que se basa, etc.)
+%     \item ¿Qué y cómo se realiza actualmente la situación que mejorarás con tu memoria?
+%     \item ¿Qué actores o usuarios están involucrados?
+%     \item ¿Qué dificultades tienen esos actores actualmente? ¿cuántos son? (ideal si se pueden poner estadísticas para así saber si existe un mercado razonable para la solución que propondrás en tu memoria, en el fondo saber cuántas personas u organizaciones tienen el mismo problema que estás definiendo)
+%     \item ¿Qué podría pasar si en el corto o mediano plazo no se solucionan esas dificultades (¿es decir, si no se hiciera tu memoria, qué pasaría?; en el fondo justificar por qué conviene hacer tu memoria, ¿cuál es la motivación o interés de hacerla?).
+%     \item ¿Qué competencia existe actualmente? (a lo mejor ya existe una solución al problema, pero por qué no sirve, o por qué tu solución sería mejor, también se puede enfocar a si este problema existe en otras realidades y cómo ha sido solucionado allí).
+%     \item Precisar los objetivos y alcances de la memoria (o solución al problema).
+% \end{itemize}
+
+% En este capítulo, de ser necesario puede usar referencias bibliográficas (velar porque sean recientes), una cita de ejemplo \cite{schwab2002cure} y otras más \cite{georget1994study,beaumont1990patient}.
+
+% Recuerde poner notas al pie de página que sean explicativas \footnote{Este es un ejemplo de una nota al pie de página. Puede indicar alguna URL, definiciones, aclarar alguna información pertinente del texto, citar algunas referencias, etc..}.
