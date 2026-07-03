@@ -1,5 +1,99 @@
 \secnumbersection{MARCO CONCEPTUAL}
 
-Se debe describir la base conceptual o fundamentos en los que se basa tu memoria, es decir, todos los conceptos técnicos, metodologías, herramientas, etc. que están involucradas en la solución propuesta. En el fondo esta parte permite precisar y delimitar el problema, estableciendo definiciones para unificar conceptos y lenguaje y fijar relaciones con otros trabajos o soluciones encontradas por otros al mismo problema evitando así plagios o repetir errores ya conocidos o abordados por otros.
+Para establecer correctamente los alcances de esta investigación es necesario conocer los fundamentos teóricos y físicos de las diferentes disciplinas involucradas. Es por esto que en este capítulo se exponen los principios de la hemodinámica vascular y su adquisición mediante \textit{4D Flow MRI}. Posteriormente, se analiza la base física del ultrasonido Doppler, cuyo modelo espectral es el estándar a emular. Finalmente se detallan los conceptos de procesamiento digital de señales y mapeo de parámetros que fundamentan la técnica de sonificación. 
 
-En esta parte es importante relacionar estos conceptos con la memoria y es fundamental utilizar referencias bibliográficas (o de la web) recientes, por ejemplo .
+\subsection{Hemodinámica vascular}\label{sec:hemodinamica}
+
+La hemodinámica es la rama de la biofísica que estudia el comportamiento del flujo sanguíneo a través del sistema cardiovascular. Para modelar matemáticamente este comportamiento, la sangre suele aproximarse como un fluido incompresible y newtoniano en los vasos de gran y mediano calibre, asumiendo que su viscosidad se mantiene constante independientemente del gradiente de velocidad (tasa de cizalladura).
+
+En tramos rectos y condiciones fisiológicas normales, el flujo sanguíneo adopta un régimen laminar. Bajo estas condiciones, el fluido se desplaza en capas cilíndricas concéntricas que se deslizan unas sobre otras sin mezclarse de forma lateral. Debido a la fricción con la pared vascular, la velocidad de la sangre es nula en los bordes (\textit{no-slip condition}) y alcanza su magnitud máxima en el eje central del vaso. Este comportamiento origina un perfil de velocidades parabólico, cuyo campo de velocidades puede ser descrito de forma idealizada mediante la ley de Poiseuille.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/marco/laminar_flow.png}
+    \caption{Perfil de flujo parabólico idealizado, donde la velocidad es máxima en el centro y nula en las paredes. Fuente: Tomado de \cite{klabunde_laminar}.}
+    \label{fig:flujo_laminar}
+\end{figure}
+
+No obstante, el flujo sanguíneo \textit{in vivo} rara vez es estacionario, ya que su naturaleza es inherentemente pulsátil. Este fenómeno está dictado por las fases de contracción y relajación del ciclo cardíaco (sístole y diástole). Junto con la pulsatilidad, también se incorpora la compleja geometría del árbol vascular (curvaturas y bifurcaciones), generando campos de velocidades complejos que varían dinámicamente en el tiempo.
+
+Capturar íntegramente esta distribución espacial de velocidades y su naturaleza pulsátil es una condición estricta, ya que esto permitirá el correcto desarrollo de algoritmos de síntesis espectral y sonificación.
+
+\subsection{Adquisición mediante \textit{4D Flow MRI}}
+
+La técnica \textit{4D Flow MRI} se ha consolidado como una herramienta fundamental para capturar la complejidad del flujo sanguíneo. Esta modalidad es una extensión volumétrica y temporal de la técnica convencional de resonancia magnética de contraste de fase (PC-MRI, por sus siglas en inglés).
+
+Desde un punto de vista práctico, la base de esta modalidad se sustenta en que los protones en movimiento dentro del torrente sanguíneo experimentan un cambio en la fase de la señal de resonancia, el cual es directamente proporcional a su velocidad espacial. Para cuantificar este desplazamiento sin errores, el parámetro de adquisición más crítico es la codificación de velocidad o VENC (\textit{Velocity Encoding}). Este se define como la velocidad máxima (ya sea positiva o negativa) que puede ser registrada sin errores. Si la velocidad real del flujo sanguíneo supera el VENC preestablecido, se produce un artefacto de ambigüedad conocido como \textit{aliasing} o solapamiento, el cual invierte artificialmente la dirección registrada del flujo y corrompe los datos cinemáticos. En los casos donde las velocidades fisiológicas superan el VENC configurado, es necesario repetir la adquisición con un valor mayor o aplicar técnicas de posprocesamiento para la corrección de fase (\textit{phase unwrapping}). Por consiguiente, resulta indispensable estimar a priori la velocidad máxima del vaso a estudiar para configurar adecuadamente este parámetro.
+
+El concepto de ``cuatro dimensiones'' en la técnica \textit{4D Flow MRI} se deriva de la captura simultánea de tres dimensiones espaciales y una temporal. A diferencia del PC-MRI bidimensional que evalúa el flujo en un único plano, esta modalidad codifica los vectores de velocidad en las tres direcciones ortogonales del espacio ($v_x, v_y, v_z$). Simultáneamente, la dimensión temporal se obtiene sincronizando la adquisición con el ciclo cardíaco del paciente mediante el electrocardiograma (ECG). Este acoplamiento divide el ciclo en múltiples intervalos temporales, permitiendo reconstruir la dinámica del flujo tridimensional a lo largo de un latido promedio representativo \cite{pineda2016_4dflow,markl2012_4dflow}.
+
+El resultado final de este proceso es un vasto conjunto de datos discretos compuesto por tres dimensiones espaciales y una dimensión temporal. En cada vóxel (\textit{volumetric pixel}) del dominio tridimensional y para cada instante de tiempo del ciclo cardíaco, se registra la magnitud anatómica y un vector de velocidad espacial tridimensional.
+
+Previo a cualquier análisis computacional, este volumen de datos brutos requiere una etapa de posprocesamiento mediante segmentación vascular. El objetivo de este paso es aislar el vaso de interés del resto de los tejidos estáticos capturados durante la resonancia. Esto asegura que la matriz de velocidades resultante contenga exclusivamente la información hemodinámica del vaso deseado. Con este dominio aislado, los datos quedan habilitados para generar represtaciones visuales tridimensionales y realizar cálculos cuantitativos sobre el flujo.
+
+
+
+\subsection{Ultrasonido Doppler}\label{subsection:doppler_ultrasound}
+
+El ultrasonido Doppler es una técnica de imagenología que permite evaluar la velocidad del flujo sanguíneo de forma no invasiva. Su funcionamiento se fundamenta en el efecto Doppler, un fenómeno físico caracterizado por el cambio en la frecuencia percibida de una onda cuando existe un movimiento relativo entre la fuente emisora y el receptor. En el contexto hemodinámico, un transductor piezoeléctrico emite pulsos acústicos a una frecuencia fundamental ($f_0$) hacia el interior del vaso sanguíneo. Los glóbulos rojos en movimiento actúan como partículas dispersoras (\textit{scatterers}) que reflejan estas ondas de vuelta hacia el transductor con una frecuencia alterada.
+
+La diferencia entre la frecuencia emitida y la frecuencia recibida se conoce como \textit{Doppler shift} ($f_d$) y es directamente proporcional a la velocidad de la sangre. Esta relación matemática se expresa mediante la ecuación clásica de Doppler \cite{GOFFI2025217}:
+
+$$f_d = \frac{2 f_0 v \cos(\theta)}{c}$$
+
+Donde $v$ corresponde a la velocidad del flujo, $c$ representa la velocidad de propagación del sonido en los tejidos blandos, y $\theta$ es el ángulo de insonación, es decir, el ángulo formado entre el haz de ultrasonido incidente y el vector de dirección del flujo sanguíneo. La ecuación puede ser reescrita para calcular la velocidad del flujo:
+
+$$ v = \frac{c f_d}{2 f_0 \cos(\theta)} $$
+
+Como se estableció en \ref{sec:hemodinamica}, el flujo sanguíneo no presenta una velocidad única y homogénea, sino que se distribuye de manera parabólica y pulsa a lo largo del tiempo. Por consiguiente, el haz de ultrasonido no registra un único desplazamiento en la frecuencia, sino un espectro continuo de frecuencias superpuestas provenientes de las distintas capas del fluido. Esta multiplicidad de ecos acústicos genera lo que se conoce en el procesamiento de señales como ensanchamiento espectral (\textit{spectral broadening}).
+
+Una visualización de este fenómeno se puede observar en la Figura \ref{fig:doppler_shift}, la cual expone una representación espectral donde se grafican las velocidades del flujo sanguíneo en función del tiempo.
+ 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/marco/doppler_shift.jpeg}
+    \caption{Representación esquemática del desplazamiento de frecuencia (\textit{Doppler shift}) originado por los glóbulos rojos en movimiento. Fuente: Tomado de \cite{GOFFI2025217}.}
+    \label{fig:doppler_shift}
+\end{figure}
+
+Una de las modalidades del ultrasonido Doppler que aplica el \textit{Doppler shift} es el \textit{Pulsed Wave Doppler} (\textit{PW-Doppler}), esta modalidad otorga una resolución espacial, permitiendo definir una región de interés (\textit{ROI} por sus siglas en inglés) o volumen de muestra (\textit{sample volume}) a una profundidad y tamaño específico dentro del vaso sanguíneo. Al posicionar este volumen de muestra sobre el área a evaluar, el sistema es capaz de capturar los diferentes desplazamientos de frecuencia generados por los glóbulos rojos que atraviesan esta delimitación espacial. Dado que el volumen de muestra suele abarcar una región con múltiples velocidades, la señal resultante contiene el ensanchamiento espectral previamente descrito.
+
+Para interpretar la superposición de ecos provenientes de la ROI, los sistemas de ultrasonido procesan la señal mediante análisis espectral, empleando clásicamente la Transformada Rápida de Fourier (FFT). Este procesamiento matemático se traduce en dos salidas simultáneas: una representación gráfica continua conocida como espectrograma Doppler, y una salida acústica. Esta última ocurre de manera inherente, dado que las frecuencias del \textit{Doppler shift} fisiológico suelen coincidir con el rango de audición humana (típicamente entre 100 Hz y 8 kHz). De este modo, la señal procesada actúa como una sonificación natural que proporciona retroalimentación auditiva en tiempo real, permitiendo identificar características hemodinámicas como la pulsatilidad o la turbulencia a través del sonido.
+
+
+\subsection{Procesamiento digital de señales y mapeo de parámetros}
+
+El procesamiento digital de señales (PDS) comprende el análisis, modificación y síntesis de señales representadas en formato discreto. En el ámbito del audio computacional, el PDS proporciona las herramientas matemáticas y algorítmicas necesarias para generar y manipular ondas sonoras a través de operaciones como la generación de osciladores, el filtrado, la modulación y la síntesis espectral.
+
+Previo a la síntesis de audio es necesario que los datos hemodinámicos sean correctamente discretizados. Una forma de modelar la hemodinámica en segmentos específicos de un una región vascular, es utilizando una estimación geométrica de la trayectoria principal del vaso, conocida como eje central o \textit{centerline}. La extracción y visualización de las velocidades a lo largo de este \textit{centerline} permite establecer un sistema de referencia local. Evaluar planos transversales perpendiculares a este eje, permite extraer matrices que contienen la magnitud y dirección de las diferentes velocidades en cada porción del vaso. Estos valores son valores de entrada fundamentales para los diferentes algoritmos de PDS.
+
+\subsubsection{Oscilador digital e integración de fase}\label{subsection:integracion_fase}
+
+En el ámbito del procesamiento digital de señales, la generación sintética de sonido se realiza mediante osciladores digitales. Un oscilador básico produce una forma de onda periódica, siendo la onda senoidal la unidad armónica más simple. La representación matemática en tiempo discreto de una señal senoidal $s(n)$ está dada por:
+
+$$ s(n) = A \sin(2\pi f n T_s + \phi) $$
+
+Donde $A$ representa la amplitud máxima de la señal, $f$ es la frecuencia fundamental en hercios (Hz), $n$ es el índice de la muestra discreta, $T_s$ es el período de muestreo (el inverso de la frecuencia de muestreo $f_s$, típicamente 44100 Hz para audio de alta calidad), y $\phi$ es la fase inicial de la onda.
+
+La ecuación anterior asume un estado estacionario donde la frecuencia $f$ es constante. Por otro lado cuando la frecuencia es variante en el tiempo $f(t)$, la fase de la onda no puede expresarse como un simple producto algebraico. En su lugar, la fase instantánea $\Phi(t)$ se define matemáticamente como la integral de la frecuencia a lo largo del tiempo:
+
+$$\Phi(t) = 2\pi \int_{0}^{t} f(\tau) d\tau$$
+
+En consecuencia, un oscilador de frecuencia variable se modela evaluando la función trigonométrica sobre esta fase acumulada ($s(t) = A \cos(\Phi(t))$). Computacionalmente, esta integración analítica se resuelve en el dominio discreto mediante métodos numéricos de integración acumulativa.
+
+\subsubsection{Síntesis de audio}
+
+Dado que la sangre no viaja a una velocidad única $v$, usar un solo oscilador senoidal es insuficiente. Es por esto que para replicar el comportamiento del \textit{Doppler shift}, es necesario usar técnicas más avanzadas como:
+
+\begin{itemize}
+    \item \textbf{Síntesis aditiva:} Consiste en la suma de múltiples osciladores senoidales operando a frecuencias y amplitudes ligeramente distintas. La señal resultante $S(n)$ es la sumatoria de $K$ osciladores individuales:
+    $$ S(n) = \sum_{k=1}^{K} A_k \sin(2\pi f_k n T_s + \phi_k) $$
+    \item \textbf{Síntesis sustractiva y modulación de ruido:} Consiste en utilizar una señal base rica en armónicos y aplicar filtros que permitan el paso de diferentes frecuencias de la señal original. Los filtros más utilizados son el filtro paso bajo (\textit{Low Pass}), paso alto (\textit{High Pass}) y paso banda (\textit{Band Pass})
+\end{itemize}
+
+\subsubsection{Mapeo de parámetros (\textit{PMSon})}
+
+Para implementar la sonificación, la metodología más estructurada es el Mapeo de Parámetros (\textit{PMson}, por sus siglas en inglés) \cite{hermann2011sonification}, con esto se puede establecer el enlace entre la dimensión espacial y la síntesis espectral.
+
+La función de mapeo principal consiste en trasladar la magnitud de la velocidad calculada ($v$) hacia la frecuencia del oscilador ($f$). Esto requiere definir un rango de velocidades de entrada $[v_{min}, v_{max}]$ y mapearlo hacia un rango de frecuencias audibles $[f_{min}, f_{max}]$. Simultáneamente a este mapeo, otras propiedades cinemáticas se asignan a diferentes dimensiones acústicas para un instante de tiempo. Por ejemplo la densidad del flujo se puede asociar directamente a la amplitud ($A$) para controlar el volumen, o la dirección del flujo a la salida del audio en un sistema stereo \cite{dubus2013systematic}.
+
