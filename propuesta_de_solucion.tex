@@ -3,17 +3,16 @@
 El presente capítulo detalla el diseño, la estructura de la metodología y la implementación del sistema propuesto para la sonificación de datos de \textit{4D Flow MRI}. Para garantizar la escalabilidad y coherencia física de los resultados, el desarrollo de la solución no se abordó como un proceso único, sino que se fue dividido en 3 etapas, las cuales dictan la organización de este capítulo 
 
 \begin{enumerate}
-    \item \textbf{Exploración espacial y síntesis acústica:} Esta etapa está enfocada en el preprocesamiento de los datos anatómicos y su traducción acústica. Se detallan la integración del \textit{centerline}, su interpolación espacial, el cálculo iterativo de los planos de corte ortogonales y la formulación trigonométrica para extraer las proyecciones de velocidades. Además, se describe el motor de la síntesis digital de señales encargado de mapear la cinemática del fluido a parámetros sonoros. Todo el procesamiento se consolida dentro de una interfaz gráfica interactiva, la cual permite la inspección y exploración de los diferentes planos y sus flujos. 
+    \item \textbf{Exploración espacial y síntesis acústica:} Esta etapa está enfocada en el preprocesamiento de los datos anatómicos y su traducción acústica. Se detallan la integración del \textit{centerline}, su interpolación espacial, el cálculo iterativo de los planos de corte ortogonales y la formulación trigonométrica para extraer las proyecciones de velocidades. Además, se describe el motor de la síntesis digital de señales encargado de mapear la cinemática del fluido a parámetros sonoros. Todo el procesamiento se consolida dentro de una interfaz gráfica interactiva, la cual permite la inspección y exploración de los diferentes planos y sus flujos. \label{item:etapa1}
     
-    \item \textbf{Procesamiento masivo y extracción de características:} Esta segunda etapa se centra en la automatización del flujo de trabajo y la consolidación de la información. Se detalla la implementación de rutinas de procesamiento por lotes (\textit{batch processing}) para extraer y almacenar de forma masiva las proyecciones de velocidad de los diferentes casos de estudio que se ingresan al sistema. La etapa concluye con la construcción de un conjunto de datos estructurado (\textit{dataset}) mediante la extracción automatizada de descriptores correspondientes tanto a la cinemática del fluido como a la síntesis acústica.
+    \item \textbf{Procesamiento masivo y extracción de características:} Esta segunda etapa se centra en la automatización del flujo de trabajo y la consolidación de la información. Se detalla la implementación de rutinas de procesamiento por lotes (\textit{batch processing}) para extraer y almacenar de forma masiva las proyecciones de velocidad de los diferentes casos de estudio que se ingresan al sistema. La etapa concluye con la construcción de un conjunto de datos estructurado (\textit{dataset}) mediante la extracción automatizada de descriptores correspondientes tanto a la cinemática del fluido como a la síntesis acústica. \label{item:etapa2}
 
-    \item \textbf{Esquema de análisis cuantitativo y exploración interactiva:} Constituye la etapa final, destinada a corroborar la eficacia de la herramienta de sonificación. Por un lado, se establece un diseño de agrupamiento estadístico sobre el conjunto de características estructurado para analizar objetivamente la correlación de las variables. Por otro lado, se detalla la arquitectura de un tablero interactivo (\textit{dashboard}) para la exploración perceptiva, permitiendo la comparación simultánea de escenarios hemodinámicos con el fin de comprobar empíricamente si las alteraciones del flujo se traducen en firmas acústicas predecibles y distinguibles.
+    \item \textbf{Análisis cuantitativo y exploración interactiva:} Constituye la etapa final, destinada a corroborar la eficacia de la herramienta de sonificación. Por un lado, se establece un diseño de agrupamiento estadístico sobre el conjunto de características estructurado para analizar objetivamente la correlación de las variables. Por otro lado, se detalla la arquitectura de un tablero interactivo (\textit{dashboard}) para la exploración perceptiva, permitiendo la comparación simultánea de escenarios hemodinámicos con el fin de comprobar empíricamente si las alteraciones del flujo se traducen en firmas acústicas predecibles y distinguibles. \label{item:etapa3}
 \end{enumerate}
 
 \subsection{Exploración espacial y síntesis acústica}
 
-La primera etapa del sistema se centra en el acondicionamiento de los datos y la configuración del motor de extracción espacial. El objetivo de esta fase es aislar secciones transversales del vaso sanguíneo para poder evaluar el comportamiento hemodinámico de forma iterativa y secuencial a lo largo de toda la estructura anatómica.
-
+La primera etapa del sistema se centra en el acondicionamiento de los datos y la configuración del motor de extracción espacial. Todo el desarrollo de esta arquitectura fue implementado en el entorno de \textit{software} MATLAB. El objetivo de esta fase es aislar secciones transversales del vaso sanguíneo para poder evaluar el comportamiento hemodinámico de forma iterativa y secuencial a lo largo de toda la estructura anatómica.
 
 \subsubsection{Interpolacíon del \textit{centerline} y cálculo de planos ortogonales}
 
@@ -144,17 +143,19 @@ En esta representación, la saturación del color escala proporcionalmente con l
 
 \subsection{Procesamiento masivo y extracción de características}
 
-La segunda etapa del desarrollo consiste en transicionar de una herramienta de exploración visual interactiva a un motor de medición automatizado. Para evaluar el impacto de diferentes morfologías y condiciones de flujo, es necesario extraer descriptores matemáticos discretos a partir de las matrices extraídas en la primera fase. Esta etapa detalla la optimización del procesamiento por lotes y la parametrización de las señales cinemáticas y acústicas.
+La segunda etapa del desarrollo consiste en transicionar de una herramienta de exploración visual a un motor de medición y sonificación automatizado. Para evaluar el impacto de diferentes morfologías y condiciones de flujo, es necesario extraer descriptores matemáticos discretos a partir de las matrices generadas en la primera fase. Esta etapa detalla la optimización del procesamiento por lotes y la parametrización de las señales cinemáticas y acústicas.
 
 \subsubsection{Procesamiento secuencial y gestión de memoria}
 
-Dada la alta dimensionalidad de los volúmenes de \textit{4D Flow MRI}, la extracción manual de parámetros para las diferentes secciones transversales de cada modelo anatómico resulta inviable. Por ello, se implementó un algoritmo orquestador encargado de invocar el motor de extracción espacial de forma secuencial y autónoma para las diferentes fuentes de datos.
+Dada la alta dimensionalidad de los volúmenes de \textit{4D Flow MRI}, la evaluación iterativa de las diferentes secciones transversales resulta inviable de realizar manualmente. Para abordar este desafío y evitar la rápida saturación de la memoria volátil (RAM) al operar con matrices de gran tamaño, el flujo de trabajo masivo se estructuró mediante dos procesos independientes y asíncronos.
 
-Durante este procesamiento masivo, el principal cuello de botella computacional es la saturación de la memoria volátil (RAM) al operar simultáneamente con múltiples matrices de gran tamaño. Para garantizar la escalabilidad, el sistema fue diseñado bajo una arquitectura de canalización (\textit{pipeline}): el orquestador ejecuta el corte y la proyección plano a plano, y exporta inmediatamente las matrices bidimensionales resultantes al almacenamiento local en formato de arreglos binarios. Este diseño transforma el modelo tridimensional pesado en un repositorio de datos ligero y fragmentado, permitiendo el procesamiento ininterrumpido sin comprometer la estabilidad del sistema computacional.
+El primer proceso actúa como un orquestador de extracción geométrica. Su función es iterar secuencialmente sobre la topología del vaso, aislando la proyección de las velocidades de cada plano transversal. Estas se exportan inmediatamente al almacenamiento local en formato de arreglos binarios y liberan la memoria volátil. Este diseño transforma el modelo tridimensional pesado en un repositorio de datos fragmentado y ligero.
+
+Una vez finalizada la etapa de extracción, entra en operación el segundo proceso: el motor de síntesis y generación de características. Este módulo independiente lee de forma iterativa los arreglos binarios previamente almacenados y los procesa a través del algoritmo de emulación Doppler. Al aislar la carga de trabajo y operar exclusivamente sobre datos bidimensionales preprocesados, este segundo motor logra generar los espectrogramas y sintetizar las respuestas acústicas de manera ininterrumpida, habilitando así la cuantificación final de los datos.
 
 \subsubsection{Parametrización cinemática y acústica (\textit{Feature Extraction})}
 
-Con las señales espaciales exportadas, el sistema ejecuta un módulo de parametrización encargado de traducir los campos vectoriales y las ondas de sonido en métricas escalares concretas. Para garantizar una comparación coherente a lo largo de toda la estructura, el sistema implementa una sincronización temporal dinámica basada en el caudal volumétrico.
+Para llevar a cabo esta cuantificación, el sistema ejecuta rutinas de parametrización encargadas de traducir los campos vectoriales y las ondas de sonido recién sintetizadas en métricas escalares concretas. Para garantizar una comparación coherente a lo largo de toda la estructura, el sistema implementa una sincronización temporal dinámica basada en el caudal volumétrico.
 
 Computacionalmente, la integración espacial del campo de velocidades se ejecuta mediante una sumatoria discreta de las magnitudes absolutas de todos los vóxeles válidos para cada fase temporal $t$:
 
@@ -177,21 +178,20 @@ La extracción de parámetros se divide en dos dominios complementarios:
 
 \textbf{Métricas de la señal digital:} Aprovechando el motor de síntesis, las proyecciones espaciales se transforman en señales de audio. Para estandarizar el análisis, la señal es truncada a una ventana de observación correspondiente a exactamente un ciclo cardíaco. Sobre esta onda modulada se extraen los siguientes descriptores de audio digital:
 \begin{itemize}
-    \item \textbf{Análisis en el dominio del tiempo:} Se calcula la energía cuadrática media (\textit{RMS}) y la tasa de cruces por cero (\textit{Zero-Crossing Rate, ZCR}). Estas variables traducen la presión sonora aparente y la densidad de fluctuaciones de la señal acústica\cite{eronen2000musical}.
+    \item \textbf{Dominio del tiempo:} Se calcula la energía de la señal (\textit{RMS}) y la tasa de cruces por cero (\textit{Zero-Crossing Rate, ZCR}). Estas variables traducen la presión sonora aparente y la densidad de fluctuaciones de la señal acústica\cite{eronen2000musical}.
     
-    \item \textbf{Análisis en el dominio de la frecuencia:} Mediante la Transformada Rápida de Fourier (FFT), se proyecta la señal sonora a su espectro de frecuencias para derivar su Centroide Espectral y su Dispersión Espectral (\textit{Spectral Spread}). Estas variables modelan matemáticamente el ensanchamiento espectral (\textit{Spectral Broadening}).
+    \item \textbf{Dominio de la frecuencia:} Mediante la Transformada Rápida de Fourier (FFT), se proyecta la señal sonora a su espectro de frecuencias para derivar su centroide espectral y su dispersión espectral (\textit{Spectral Spread}). Estas variables modelan matemáticamente el ensanchamiento espectral (\textit{Spectral Broadening}).
     
-    \item \textbf{Coeficientes Cepstrales en las Frecuencias de Mel (MFCC 1 al 3):} Descriptores fundamentales en el reconocimiento de patrones sonoros. Al aplicar un banco de filtros espaciados según la escala Mel, se modela la resolución no lineal de la audición humana. La extracción de estos coeficientes permite cuantificar el ``timbre'' del flujo\cite{zheng2015heart}.
+    \item \textbf{Coeficientes cepstrales en las frecuencias de Mel (MFCC 1 al 3):} Descriptores fundamentales en el reconocimiento de patrones sonoros. Al aplicar un banco de filtros espaciados según la escala Mel, se modela la resolución no lineal de la audición humana. La extracción de estos coeficientes permite cuantificar el ``timbre'' del flujo\cite{zheng2015heart}.
 \end{itemize}
 
 La extracción sistemática de estas métricas genera una matriz de datos que unifica las características cinemáticas del flujo con su firma acústica, esta matriz representa un conjunto de datos estructurados o \textit{dataset}.
 
-\subsection{Esquema de análisis cuantitativo y exploración interactiva}
+\subsection{Análisis cuantitativo y exploración interactiva}
 
-La etapa final consiste en establecer el esquema de evaluación sobre el espacio de características multimodal. Con este fin, se desarrolla una herramienta de análisis comparativo interactiva. El objetivo de esta implementación es contar con un mecanismo objetivo para comprobar si la traducción cinemática-acústica es efectiva, y evidenciar si las alteraciones del flujo sanguíneo generan, bajo los criterios de sonificación establecidos, firmas sonoras predecibles y distinguibles.
+La etapa final consiste en establecer un esquema de evaluación sobre el espacio de características multimodal. Con este fin, se desarrolla una herramienta de análisis comparativo. El objetivo de esta implementación es contar con un mecanismo objetivo para comprobar si la traducción cinemática-acústica es efectiva, y evidenciar si las alteraciones del flujo sanguíneo generan, bajo los criterios de sonificación establecidos, firmas sonoras predecibles y distinguibles.
 
 \subsubsection{Agrupamiento estadístico y análisis de importancia}
-
 
 Para evaluar matemáticamente la capacidad de discriminación del \textit{dataset} construido, se implementa una etapa de aprendizaje automático no supervisado. El análisis se aborda mediante la ejecución del algoritmo de agrupamiento $K$-Means, configurado para particionar los datos en $k$ clústeres. Con el fin de aislar el peso predictivo de cada dominio, el agrupamiento se itera sobre tres subconjuntos independientes: un espacio estrictamente cinemático, un espacio puramente acústico y el espacio multimodal fusionado
 
@@ -199,17 +199,27 @@ La validación de los clústeres descubiertos se estructura en dos niveles. A ni
 
 Adicionalmente, para comprender la contribución de cada variable en la formación de estos patrones, se aplica un Análisis de Componentes Principales (PCA). La extracción de los pesos absolutos del primer componente principal ($PC_1$) permite identificar cuáles descriptores actúan como los marcadores de varianza más fuertes dentro del modelo no supervisado.
 
-% \subsubsection{Entorno interactivo de evaluación clínica}
+\subsubsection{Exploración interactiva}
 
-% El segundo frente del esquema de evaluación, orientado a la percepción cualitativa, consiste en el despliegue del \textit{Dashboard Hemodinámico Interactivo}. Esta interfaz se vincula de forma directa con la primera etapa de la metodología, al heredar la reconstrucción geométrica tridimensional del vaso y la discretización espacial de los 90 planos transversales. Asimismo, la herramienta representa un aprovechamiento integral del motor de síntesis desarrollado en la segunda etapa, explotando la emulación computacional del ultrasonido Doppler para transformar instantáneamente las métricas cinemáticas locales en señales sonoras. Su diseño está concebido para realizar pruebas comparativas simultáneas (\textit{A/B testing}) entre distintos escenarios anatómicos o estados de flujo.
+Con el fin de comparar diferentes instancias de sonificación y síntesis espectral, se genera un \textit{dashboard} interactivo. Esta interfaz se vincula directamente con las etapas anteriores. De la primera etapa hereda la reconstrucción geómetrica del vaso y la discretización espacial mediante la interpolación del \textit{centerline}. De la segunda etapa, se reutiliza las matrices guardadas en formato binario y el algoritmo de emulación Doppler. 
 
-% Para articular analíticamente esta integración, el entorno dual sincroniza las siguientes dimensiones operativas:
-% \begin{itemize}
-%     \item \textbf{Navegación y control espacial (Vínculo con Etapa 1):} Utiliza el renderizado tridimensional de la isosuperficie del vaso y su eje central (\textit{centerline}) para permitir al usuario desplazar un marcador interactivo a lo largo de los puntos de estudio equidistantes ($P_i$). Esto permite seleccionar con precisión anatómica la sección transversal exacta que se desea evaluar.
-%     \item \textbf{Procesamiento y audición bajo demanda (Aprovechamiento de Etapa 2):} Al posicionar el marcador en un plano específico, el sistema extrae automáticamente el vector de características cinemáticas y activa las rutinas de síntesis acústica. Esto genera e invoca de manera inmediata la sonificación estéreo basada en el comportamiento local del fluido.
-%     \item \textbf{Representación visual de las señales:} Despliega bidireccionalmente las matrices de densidad espectral (espectrogramas) y las formas de onda en el dominio del tiempo resultantes de la síntesis, autoescalando los ejes paramétricos para garantizar una comparación visual y acústica coherente entre ambos casos estudiados.
-% \end{itemize}
+El \textit{dashboard} utiliza estos elementos para generar pruebas comparativas entre diferentes escenarios anatómicos o estados de flujo.
 
-% El significado metodológico de este comparador interactivo radica en su capacidad para unificar los hallazgos de las fases previas en una experiencia analítica unificada. Al enlazar la ubicación espacial exacta determinada en la Etapa 1 con la respuesta acústica simulada en la Etapa 2, la interfaz proporciona un mecanismo objetivo y multisensorial para comprobar si los criterios de sonificación establecidos logran traducir de manera efectiva las anomalías hemodinámicas en firmas sonoras clínica y perceptivamente distinguibles.
+El \textit{dashboard} (ver Figura \ref{fig:dashboard}) utiliza estos elementos para generar pruebas comparativas simultáneas (\textit{A/B testing}) entre diferentes escenarios anatómicos o estados de flujo. Para articular analíticamente estas comparaciones, el entorno sincroniza tres dimensiones operativas principales:
 
+\begin{itemize}
+    \item \textbf{Navegación espacial:} A partir de la geometría heredada, el sistema renderiza la isosuperficie del vaso y permite al usuario desplazar un marcador a lo largo de los planos de estudio. Esto facilita la selección de la sección transversal que se desea evaluar.
+    
+    \item \textbf{Procesamiento y audición bajo demanda:} Al ubicar el marcador en un plano específico, la herramienta lee la matriz guardada correspondiente y ejecuta el motor de emulación. Esto permite sintetizar y reproducir de forma casi inmediata la sonificación asociada a ese plano de estudio.
+    
+    \item \textbf{Representación visual simultánea:} Presenta en paneles paralelos los espectrogramas y las formas de onda temporales correspondientes a cada caso. Para asegurar una comparación objetiva, el entorno unifica y ajusta dinámicamente las escalas de los ejes, garantizando que las diferencias visuales observadas correspondan a variaciones hemodinámicas.
+\end{itemize}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/propuesta/dashboard.jpeg}
+    \caption{Interfaz gráfica del \textit{dashboard} interactivo. El panel central permite la navegación espacial por el \textit{centerline} sobre la geometría del vaso. Los paneles laterales despliegan de forma comparativa los espectrogramas (arriba) y las formas de onda sintetizadas (abajo) para dos escenarios de flujo, integrando comandos para la evaluación acústica. Fuente: Elaboración propia.}
+    \label{fig:dashboard}
+\end{figure}
+
+La relevancia de este entorno comparativo radica en su función como plataforma de evaluación perceptual. Al sincronizar la geometría del vaso con las señales sintetizadas, el sistema facilita un análisis directo de los datos procesados. Este acoplamiento es el que permite contrastar los diferentes estados de flujo y confirmar si la parametrización matemática de la hemodinámica se traduce exitosamente en marcadores sonoros reconocibles para un evaluador.
