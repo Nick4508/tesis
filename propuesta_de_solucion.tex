@@ -37,7 +37,7 @@ Donde $P_{i+1}$ y $P_{i-1}$ corresponden al punto posterior y anterior en la sec
 
 Una vez establecidos el origen del plano $P_i$ y su vector normal $\vec{N}_i$ en una iteración dada, el sistema normaliza este vector para obtener un vector director unitario $\hat{n}_i = \frac{\vec{N}_i}{||\vec{N}_i||}$. Este vector unitario es fundamental para garantizar que las transformaciones geométricas subsecuentes preserven las magnitudes físicas originales del fluido.
 
-Con los parámetros espaciales definidos, el sistema ejecuta la sección de las matrices volumétricas correspondientes a las tres componentes espaciales de la velocidad capturadas por el resonador ($V_x$, $V_y$, $V_z$, muchas veces representadas por $V_RL$, $V_AP$ y $V_FH$). Esta se implementa mediante la extracción de un corte oblicuo (\textit{oblique slice}) a través de los volúmenes tridimensionales. La matriz bidimensional resultante contiene, en cada uno de sus píxeles, un vector de velocidad tridimensional $\vec{V} = (v_x, v_y, v_z)$ que describe el movimiento del fluido en esa región transversal específica.
+Con los parámetros espaciales definidos, el sistema ejecuta la sección de las matrices volumétricas correspondientes a las tres componentes espaciales de la velocidad capturadas por el resonador ($V_x$, $V_y$, $V_z$, muchas veces representadas por $V_{RL}$, $V_{AP}$ y $V_{FH}$). Esta se implementa mediante la extracción de un corte oblicuo (\textit{oblique slice}) a través de los volúmenes tridimensionales. La matriz bidimensional resultante contiene, en cada uno de sus píxeles, un vector de velocidad tridimensional $\vec{V} = (v_x, v_y, v_z)$ que describe el movimiento del fluido en esa región transversal específica.
 
 Sin embargo, el realizar un corte oblicuo sobre la segmentación anatómica, la representación resultante no siempre es una región única. Con frecuencia presenta múltiples regiones aisladas o \textit{islas}. Estas discrepancias topologícas pueden ser producto de ruido inherente en la imagen, ramificaciones vasculares secundarias o vasos sanguíneos adyacentes que cruzan el mismo plano de corte.
 
@@ -185,7 +185,31 @@ La extracción de parámetros se divide en dos dominios complementarios:
     \item \textbf{Coeficientes cepstrales en las frecuencias de Mel (MFCC 1 al 3):} Descriptores fundamentales en el reconocimiento de patrones sonoros. Al aplicar un banco de filtros espaciados según la escala Mel, se modela la resolución no lineal de la audición humana. La extracción de estos coeficientes permite cuantificar el ``timbre'' del flujo\cite{zheng2015heart}.
 \end{itemize}
 
-La extracción sistemática de estas métricas genera una matriz de datos que unifica las características cinemáticas del flujo con su firma acústica, esta matriz representa un conjunto de datos estructurados o \textit{dataset}.
+La extracción sistemática de estas métricas genera una matriz de datos que unifica las características cinemáticas del flujo con su firma acústica. Esta matriz representa un conjunto de datos estructurados o \textit{dataset}. El detalle de las variables consolidadas en este conjunto, agrupadas según su dominio de origen, se expone en la Tabla \ref{tab:resumen_metricas}.
+
+\begin{table}[htbp]
+\centering
+\caption{Resumen de las métricas extraídas y sus respectivos dominios.}
+\label{tab:resumen_metricas}
+\begin{tabular}{ll}
+\toprule
+\textbf{Variable / Descriptor} & \textbf{Dominio} \\ 
+\midrule
+Velocidad máxima (\texttt{RAW\_Vmax}) & Cinemático \\
+Velocidad media (\texttt{RAW\_Vmedia}) & Cinemático \\
+Varianza espacial (\texttt{RAW\_VarianzaEspacial}) & Cinemático \\
+Flujo de área (\texttt{RAW\_FlujoArea}) & Cinemático \\
+Asimetría espacial (\texttt{RAW\_SkewnessEspacial}) & Cinemático \\
+Índice de pulsatilidad (\texttt{RAW\_IndicePulsatilidad}) & Cinemático \\ 
+Energía de la señal (\texttt{WAV\_EnergiaRMS}) & Acústica \\
+Amplitud pico (\texttt{WAV\_Pico}) & Acústica \\
+Tasa de cruces por cero (\texttt{WAV\_ZCR}) & Acústica \\
+Centroide espectral (\texttt{WAV\_CentroideFreq}) & Acústica \\
+Dispersión espectral (\texttt{WAV\_SpreadFreq}) & Acústica \\
+Coeficientes de Mel (\texttt{WAV\_MFCC1} a \texttt{MFCC3}) & Acústica \\ 
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Análisis cuantitativo y exploración interactiva}
 

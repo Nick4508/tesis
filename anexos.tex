@@ -1,3 +1,201 @@
 \secnumberlesssection{ANEXOS}
 
-En los Anexos se incluye todo aquel material complementario que no es parte del contenido de los capítulos de la memoria, pero que permiten a un lector contar con un contenido adjunto relacionado con el tema.
+\section{Anexo A: Matrices de contingencia del agrupamiento K-Means}
+\label{anexo:matrices_kmeans}
+
+Se presentan las tablas de contingencia que detallan la distribución cuantitativa de cada clúster descubierto por el algoritmo \textit{K-Means} ($k=4$). 
+\begin{table}[H]
+\centering
+\caption{Tabla de contingencia: Distribución de planos anatómicos por clúster para el dominio de características cinemáticas.}
+\label{tab:anexo_cinematico}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lcccccccc}
+\hline
+ & \multicolumn{2}{c}{\textbf{Fantoma Normal}} & \multicolumn{2}{c}{\textbf{Estenosis 9 mm}} & \multicolumn{2}{c}{\textbf{Estenosis 11 mm}} & \multicolumn{2}{c}{\textbf{Estenosis 13 mm}} \\ \cline{2-9} 
+\textbf{Clúster asignado} & \textit{Rest} & \textit{Stress} & \textit{Rest} & \textit{Stress} & \textit{Rest} & \textit{Stress} & \textit{Rest} & \textit{Stress} \\ \hline
+\textbf{Clúster 1} & 12 & 16 & 19 & 16 & 28 & 29 & 30 & 36 \\
+\textbf{Clúster 2} & 0 & 0 & 20 & 26 & 8 & 11 & 0 & 0 \\
+\textbf{Clúster 3} & 67 & 63 & 39 & 34 & 42 & 36 & 48 & 40 \\
+\textbf{Clúster 4} & 11 & 11 & 12 & 14 & 12 & 14 & 12 & 14 \\ \hline
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Tabla de contingencia: Distribución de planos anatómicos por clúster para el dominio de características acústicas.}
+\label{tab:anexo_acustico}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lcccccccc}
+\hline
+ & \multicolumn{2}{c}{\textbf{Fantoma Normal}} & \multicolumn{2}{c}{\textbf{Estenosis 9 mm}} & \multicolumn{2}{c}{\textbf{Estenosis 11 mm}} & \multicolumn{2}{c}{\textbf{Estenosis 13 mm}} \\ \cline{2-9} 
+\textbf{Clúster asignado} & \textit{Rest} & \textit{Stress} & \textit{Rest} & \textit{Stress} & \textit{Rest} & \textit{Stress} & \textit{Rest} & \textit{Stress} \\ \hline
+\textbf{Clúster 1} & 48 & 22 & 24 & 10 & 28 & 11 & 30 & 12 \\
+\textbf{Clúster 2} & 4 & 7 & 17 & 24 & 10 & 14 & 8 & 15 \\
+\textbf{Clúster 3} & 0 & 45 & 9 & 47 & 4 & 58 & 3 & 52 \\
+\textbf{Clúster 4} & 38 & 16 & 40 & 9 & 48 & 7 & 49 & 11 \\ \hline
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Tabla de contingencia: Distribución de planos anatómicos por clúster para el dominio multimodal.}
+\label{tab:anexo_multimodal}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lcccccccc}
+\hline
+ & \multicolumn{2}{c}{\textbf{Fantoma Normal}} & \multicolumn{2}{c}{\textbf{Estenosis 9 mm}} & \multicolumn{2}{c}{\textbf{Estenosis 11 mm}} & \multicolumn{2}{c}{\textbf{Estenosis 13 mm}} \\ \cline{2-9} 
+\textbf{Clúster asignado} & \textit{Rest} & \textit{Stress} & \textit{Rest} & \textit{Stress} & \textit{Rest} & \textit{Stress} & \textit{Rest} & \textit{Stress} \\ \hline
+\textbf{Clúster 1} & 14 & 49 & 29 & 30 & 31 & 37 & 31 & 47 \\
+\textbf{Clúster 2} & 3 & 6 & 23 & 36 & 16 & 28 & 7 & 16 \\
+\textbf{Clúster 3} & 11 & 11 & 12 & 13 & 13 & 13 & 14 & 14 \\
+\textbf{Clúster 4} & 62 & 24 & 26 & 11 & 30 & 12 & 38 & 13 \\ \hline
+\end{tabular}
+}
+\end{table}
+
+
+\section{Anexo B: Exploración perceptiva y espectral bajo condición de reposo (\textit{rest})}
+% \addcontentsline{toc}{section}{Anexo A: Exploración perceptiva y espectral bajo condición de reposo}
+
+En este anexo se documenta la evolución espectral y acústica de los cuatro modelos morfológicos (Normal, 13 mm, 11 mm y 9 mm) evaluados bajo la condición hemodinámica de reposo (\textit{rest}). Se mantiene la misma discretización espacial definida en el análisis principal para facilitar la comparación cruzada.
+
+\subsection{B.1 Análisis comparativo: Plano pre-curva (Plano 21)}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/anexos/Normal_rest_Plano21.png}
+        \caption{Fantoma normal}
+        \label{fig:anexo_p21_normal}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/anexos/13_mm_rest_Plano21.png}
+        \caption{Fantoma 13 mm}
+        \label{fig:anexo_p21_13mm}
+    \end{subfigure}
+    
+    \vspace{0.4cm}
+    
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/anexos/11_mm_rest_Plano21.png}
+        \caption{Fantoma 11 mm}
+        \label{fig:anexo_p21_11mm}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/anexos/9_mm_rest_Plano21.png}
+        \caption{Fantoma 9 mm}
+        \label{fig:anexo_p21_9mm}
+    \end{subfigure}
+    \caption{\label{fig:anexo_comparacion_p21} Evolución espectral en la zona pre-curva (Plano 21) bajo condición de reposo. El perfil de velocidades se mantiene bajo y estable en todos los modelos previo a la geometría compleja.}
+\end{figure}
+
+
+\subsection{B.2 Análisis comparativo: Plano del arco aórtico (Plano 45)}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/anexos/Normal_rest_Plano45.png}
+        \caption{Fantoma normal}
+        \label{fig:anexo_p45_normal}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/anexos/13_mm_rest_Plano45.png}
+        \caption{Fantoma 13 mm}
+        \label{fig:anexo_p45_13mm}
+    \end{subfigure}
+    
+    \vspace{0.4cm}
+    
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/anexos/11_mm_rest_Plano45.png}
+        \caption{Fantoma 11 mm}
+        \label{fig:anexo_p45_11mm}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/anexos/9_mm_rest_Plano45.png}
+        \caption{Fantoma 9 mm}
+        \label{fig:anexo_p45_9mm}
+    \end{subfigure}
+    \caption{\label{fig:anexo_comparacion_p45} Evolución espectral en el arco aórtico (Plano 45) bajo condición de reposo. Se aprecian dispersiones leves atribuibles a la curvatura morfológica natural de los fantomas.}
+\end{figure}
+
+
+\subsection{B.3 Análisis comparativo: Plano de la coartación (Plano 53)}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/anexos/Normal_rest_Plano53.png}
+        \caption{Fantoma normal}
+        \label{fig:anexo_p53_normal}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/anexos/13_mm_rest_Plano53.png}
+        \caption{Fantoma 13 mm}
+        \label{fig:anexo_p53_13mm}
+    \end{subfigure}
+    
+    \vspace{0.4cm}
+    
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/anexos/11_mm_rest_Plano53.png}
+        \caption{Fantoma 11 mm}
+        \label{fig:anexo_p53_11mm}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/anexos/9_mm_rest_Plano53.png}
+        \caption{Fantoma 9 mm}
+        \label{fig:anexo_p53_9mm}
+    \end{subfigure}
+    \caption{\label{fig:anexo_comparacion_p53} Comportamiento espectral en la garganta de la estenosis (Plano 53) bajo condición de reposo. El aumento de velocidad es evidente en las oclusiones mayores, aunque con amplitudes más moderadas que en la condición de estrés.}
+\end{figure}
+
+
+\subsection{B.4 Análisis comparativo: Zona post-coartación (Plano 70)}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/anexos/Normal_rest_Plano70.png}
+        \caption{Fantoma normal}
+        \label{fig:anexo_p70_normal}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/anexos/13_mm_rest_Plano70.png}
+        \caption{Fantoma 13 mm}
+        \label{fig:anexo_p70_13mm}
+    \end{subfigure}
+    
+    \vspace{0.4cm}
+    
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/anexos/11_mm_rest_Plano70.png}
+        \caption{Fantoma 11 mm}
+        \label{fig:anexo_p70_11mm}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/anexos/9_mm_rest_Plano70.png}
+        \caption{Fantoma 9 mm}
+        \label{fig:anexo_p70_9mm}
+    \end{subfigure}
+    \caption{\label{fig:anexo_comparacion_p70} Dispersión espectral en la zona post-coartación (Plano 70) bajo condición de reposo. Se refleja el grado de turbulencia remanente en la fase de descarga sistólica de los distintos fantomas.}
+\end{figure}

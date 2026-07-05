@@ -12,7 +12,7 @@ La demostración empírica de la propuesta se divide en dos ejes principales de 
 \end{itemize}
 
 
-\subsection{Caracterización de los datos experimentales}
+\subsection{Datos experimentales}
 
 Previa a la exposición de los resultados, es necesario detallar las características del conjunto de datos de prueba utilizado. El marco experimental está compuesto por adquisiciones de \textit{4D Flow MRI} correspondientes a fantomas cardiovasculares. En el ámbito de la hemodinámica, un fantoma es un modelo físico calibrado diseñado específicamente para emular la geometría del sistema cardiovascular.
 
@@ -48,7 +48,6 @@ Las configuraciones que definen los escenarios de estudio evaluados se resumen e
 
 
 Definidos los ocho escenarios de estudio, la primera fase de validación aborda el desempeño de los módulos de procesamiento espacial y acústico. Considerando que los volúmenes hemodinámicos, las segmentaciones y los \textit{centerlines} se proporcionan como datos de entrada, el objetivo de esta etapa es demostrar la correcta integración y transformación de estos elementos. A continuación, se verifica la capacidad del algoritmo para iterar sobre la trayectoria anatómica y extraer los perfiles de velocidad locales, para finalmente exhibir cómo esta cinemática se convierte exitosamente en las señales sonoras y espectrogramas representativos del fantoma.
-
 
 \subsection{Verificación del procesamiento espacial y acústico}
 
@@ -164,37 +163,294 @@ A fin de ilustrar esta capacidad, la Figura \ref{fig:validacion_doppler2d_tempor
 
 Como se aprecia en la secuencia visual, el sistema aísla exitosamente el plano transversal que atraviesa el vaso, conteniendo exclusivamente los perfiles hemodinámicos de la región de interés. 
 
-En síntesis, el sistema ha demostrado su capacidad para procesar la complejidad de los datos provenientes del \textit{4D Flow MRI}, logrando aislar topológicamente el vaso y traducir su cinemática en representaciones acústicas, espectrales y espaciales consistentes entre sí. No obstante, aunque esta herramienta resulta fundamental para una primera inspección cualitativa, el análisis comparativo entre múltiples morfologías y secciones transversales exige un enfoque paramétrico y escalable. Por consiguiente, la siguiente etapa de validación abordará la segunda fase de la investigación, comprobando cómo este núcleo de procesamiento fue automatizado para extraer, de forma masiva, los descriptores numéricos que caracterizan la hemodinámica de todos los modelos de estudio.
+En síntesis, el sistema ha demostrado su capacidad para procesar la complejidad de los datos provenientes de \textit{4D Flow MRI}, logrando aislar topológicamente el vaso y traducir su cinemática en representaciones acústicas, espectrales y espaciales consistentes entre sí. Aunque esta herramienta sirve para una primera inspección cualitativa, el análisis comparativo entre múltiples morfologías y secciones transversales exige un enfoque escalable. Por lo que la siguiente etapa de validación abordará la segunda fase de la investigación, comprobando cómo este núcleo de procesamiento fue automatizado para extraer, de forma masiva, los descriptores numéricos que caracterizan la hemodinámica de todos los modelos de estudio.
 
+\subsubsection{Validación de la extracción de parámetros y procesamiento masivo}
 
-% \subsubsection{Validación de la extracción paramétrica y procesamiento masivo}
+Tras comprobar la correcta emulación del ultrasonido Doppler, la validación de la segunda etapa se enfoca estrictamente en verificar el correcto desempeño del algoritmo de procesamiento por lotes (\textit{batch processing}). El objetivo de esta fase fue procesar ininterrumpidamente las matrices de los diferentes escenarios hemodinámicos para consolidar la extracción de características cinemáticas y acústicas, garantizando así la autonomía del sistema frente a las restricciones de hardware.
 
-% Tras comprobar la fidelidad espacial y acústica del motor base, la validación de la segunda etapa se enfoca estrictamente en verificar el correcto desempeño computacional del algoritmo de procesamiento por lotes (\textit{batch processing}) y la integridad estructural de los datos exportados. El objetivo de esta fase fue procesar de forma ininterrumpida las matrices correspondientes a los diferentes escenarios hemodinámicos para consolidar exitosamente un espacio de características multidimensional, garantizando que el sistema operara de manera autónoma sin pérdida de información.
+El volumen de datos proveniente de \textit{4D Flow MRI} representa un desafío computacional significativo. Al procesar de forma continua los 8 modelos de estudio (evaluando un total de 720 secciones transversales), cargar y procesar la totalidad de estas secciones implicaba un riesgo inminente de saturación y colapsamiento de la memoria RAM del equipo. Este riesgo se mitigó de manera fragmentada las proyecciones de cada plano hacia el almacenamiento local en archivos binarios de MATLAB (\textit{.mat}).
 
-% El procesamiento continuo de los 8 modelos de estudio (condiciones de reposo y estrés) permitió evaluar un total de 720 secciones transversales anatómicas. Durante la ejecución de esta etapa, la inspección del repositorio intermedio expuso una varianza empírica significativa en la huella de almacenamiento de los archivos. Lejos de representar una anomalía computacional, esta fluctuación constituye una validación geométrica intrínseca: el peso de cada archivo es directamente proporcional al área anatómica de la sección transversal del lumen vascular. Planos amplios contienen un mayor número de vóxeles catalogados como flujo, generando matrices más pesadas, mientras que las zonas estrechas o de coartación producen arreglos sustancialmente más ligeros. Esta correspondencia demuestra que el sistema aísla y se adapta dinámicamente a la morfología real del vaso iteración tras iteración.
+Como parte de esta estrategia de contención de memoria, se trabajó sobre el formato de los datos. En una primera instancia, el sistema se configuró para operar y exportar en precisión simple (\textit{single}, 32 bits), con el propósito de reducir la carga computacional y prevenir el colapso del sistema. No obstante, las pruebas de rendimiento demostraron que la exportación iterativa era lo suficientemente robusta como para gestionar y liberar la memoria de forma eficiente. Esto permitió escalar la carga computacional, operando y exportando formato nativo de precisión doble (\textit{double}, 64 bits) sin comprometer la estabilidad del hardware. La Figura \ref{fig:exportacion_batch_precision} evidencia el impacto directo en la huella de memoria al transicionar entre ambas precisiones.
 
-% En cuanto a la arquitectura de datos, el diseño computacional priorizó la máxima fidelidad matemática. Durante las etapas preliminares, el sistema operaba los tensores en precisión simple (\textit{single}, 32 bits) para minimizar el impacto en la memoria. No obstante, para evitar errores de truncamiento acumulativos durante la integración de las señales acústicas y el cómputo del espectro de Fourier, se determinó escalar y fijar el procesamiento a precisión doble (\textit{double}, 64 bits). 
-
-% Evidentemente, esta exigencia matemática duplicaba la carga sobre la memoria volátil. Para mitigar este cuello de botella y evitar la saturación de la memoria RAM, se implementó la arquitectura de canalización que exporta de manera fragmentada las matrices de cada plano hacia el almacenamiento local en archivos binarios (\textit{.mat}). Para evidenciar el impacto de esta decisión de ingeniería y la carga que el sistema logró gestionar exitosamente, la Figura \ref{fig:exportacion_batch_precision} contrasta la huella de memoria entre la precisión base y la implementación final de alta resolución.
-
-% \begin{figure}[H]
-%     \centering
-%     \begin{subfigure}{0.85\textwidth}
-%         \centering
-%         \includegraphics[width=\linewidth]{figures/validacion/fase2/carpetas_single.jpeg} 
-%         \caption{Implementación preliminar: Precisión \textit{single} (32 bits)}
-%         \label{fig:memoria_single}
-%     \end{subfigure}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.85\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/validacion/fase2/carpetas_single.jpeg} 
+        \caption{Matrices exportadas en precisión \textit{single} (32 bits)}
+        \label{fig:memoria_single}
+    \end{subfigure}
     
-%     \vspace{0.4cm}
+    \vspace{0.4cm}
     
-%     \begin{subfigure}{0.85\textwidth}
-%         \centering
-%         \includegraphics[width=\linewidth]{figures/validacion/fase2/carpetas_double.jpeg} 
-%         \caption{Implementación definitiva: Precisión \textit{double} (64 bits)}
-%         \label{fig:memoria_double}
-%     \end{subfigure}
-%     \caption{\label{fig:exportacion_batch_precision} Comparativa del impacto en el almacenamiento local (\textit{Storage Footprint}) generado por el orquestador. El salto hacia la alta precisión (\textit{double}) incrementó el peso por iteración de $\sim$109 KB a $\sim$204 KB; sin embargo, la exportación iterativa evitó la saturación de la RAM, garantizando la máxima integridad para la síntesis acústica. Fuente: Elaboración propia.}
-% \end{figure}
+    \begin{subfigure}{0.85\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/validacion/fase2/carpetas_double.jpeg} 
+        \caption{Matrices exportadas en precisión \textit{double} (64 bits)}
+        \label{fig:memoria_double}
+    \end{subfigure}
+    \caption{\label{fig:exportacion_batch_precision} Comparativa de la huella de almacenamiento, el procesamiento por lotes permitió procesar y exportar las matrices en formato de precisión \textit{double}. Fuente: Elaboración propia.}
+\end{figure}
 
-% La correcta generación de este repositorio fragmentado y de alta precisión permitió que el módulo de parametrización (\textit{Feature Extraction}) iterara sobre los archivos locales de manera eficiente. El algoritmo extrajo con éxito los descriptores cinemáticos y sonoros para cada plano, culminando en la consolidación de la matriz tabular final (\textit{Dataset}). Esta estructura de datos bidimensional cierra formalmente la etapa de digitalización, sentando las bases numéricas estrictamente necesarias para la validación clínica mediante el descubrimiento de patrones no supervisados.
+Adicionalmente, la inspección de estos matrices exportadas sirvió como validación del comportamiento geométrico del algoritmo. Como se observa en la progresión de los archivos, la huella de almacenamiento presenta una varianza natural (fluctuando entre $\sim$200 KB y $\sim$500 KB bajo el estándar de 64 bits). Esta fluctuación no es anómala, sino que responde directamente al área transversal de cada corte: planos anatómicos amplios capturan más vóxeles de flujo y generan matrices más pesadas, mientras que las zonas estrechas producen arreglos más ligeros. Esta correspondencia demuestra que el sistema aísla y se adapta dinámicamente a la morfología real del vaso iteración tras iteración.
+
+La correcta generación de este repositorio permitió que el módulo de parametrización (\textit{Feature Extraction}) operara de manera segura y eficiente. El algoritmo extrajo con éxito los descriptores cinemáticos y sonoros correspondientes, consolidando estos en un \textit{dataset}. 
+
+La consolidación del repositorio que contiene las proyecciones de velocidad y \textit{dataset} de características, marca el cierre de la etapa de procesamiento masivo. En su conjunto, estos archivos proporcionan la base para la tercera y última etapa de la investigación. El análisis cuantitativo mediante aprendizaje no supervisado y el análisis cualitativo mediante la comparación de distintos escenarios hemodinámicos.
+
+
+% -----
+
+\subsection{Validación estadística y perceptiva}
+
+Superada la etapa anterior, lo siguiente es validar el sistema a través de un enfoque cuantitativo-cualitativo. El propósito de esta sección es evaluar la separabilidad del espacio de características, demostrando su capacidad para segmentar de forma autónoma las distintas regiones hemodinámicas dentro de un mismo modelo. Por otro lado, se desarrollará un análisis cualitativo que contrastará visual y auditivamente los distintos fantomas.
+
+De este modo, la sección se estructura en dos etapas de evaluación. En primer lugar, se desarrolla el análisis cuantitativo mediante la aplicación de técnicas de reducción de dimensionalidad y el algoritmo de agrupamiento no supervisado \textit{K-Means}, verificando si los descriptores extraídos logran discriminar de forma autónoma las diferentes intensidades hemodinámicas presentes a lo largo de un mismo fantoma. En segundo lugar, se despliega un análisis comparativo de los distintos escenarios de estudio. Estas comparaciones permiten constatar directamente cómo las alteraciones en la hemodinámica producen cambios acústicos distinguibles, cerrando la validación del modelo.
+
+\subsubsection{Preparación del espacio de características y estandarización}
+
+Previo a la ejecución de los algoritmos de aprendizaje automático, es necesario adecuar matemáticamente las variables. Los 14 descriptores extraídos presentan naturalezas físicas dispares y, por consiguiente, operan en escalas y magnitudes diferentes. Los rangos empíricos se pueden observar en la Tabla \ref{tab:rangos_variables}.
+
+\begin{table}[H]
+\centering
+\caption{Descriptores cinemáticos y acústicos: rangos empíricos extraídos del conjunto de datos.}
+\label{tab:rangos_variables}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{llrrr}
+\hline
+\textbf{Variable Original} & \textbf{Dominio Físico} & \textbf{Mínimo} & \textbf{Máximo} & \textbf{Media} \\ \hline
+\texttt{RAW\_Vmax} & Cinemático & 26.4147 & 370.2261 & 90.3139 \\
+\texttt{RAW\_Vmedia} & Cinemático & 17.3057 & 116.6001 & 47.2004 \\
+\texttt{RAW\_VarianzaEspacial} & Cinemático & 6.1523 & 12771.9800 & 1255.9163 \\
+\texttt{RAW\_FlujoArea} & Cinemático & 7702.0240 & 68419.7700 & 27003.7151 \\
+\texttt{RAW\_SkewnessEspacial} & Cinemático & -1.9184 & 1.9071 & -0.4246 \\
+\texttt{RAW\_IndicePulsatilidad} & Cinemático & 1.6472 & 14.8730 & 4.6266 \\
+\texttt{WAV\_EnergiaRMS} & Acústico & 0.0378 & 0.1115 & 0.0702 \\
+\texttt{WAV\_Pico} & Acústico & 0.3666 & 0.6936 & 0.4243 \\
+\texttt{WAV\_ZCR} & Acústico & 0.0094 & 0.0437 & 0.0174 \\
+\texttt{WAV\_CentroideFreq} & Acústico & 339.7035 & 885.6207 & 595.4753 \\
+\texttt{WAV\_SpreadFreq} & Acústico & 100.8497 & 419.9671 & 280.6071 \\
+\texttt{WAV\_MFCC1} & Acústico & -4.1597 & 2.0854 & 0.0863 \\
+\texttt{WAV\_MFCC2} & Acústico & -27.2934 & -14.2103 & -19.5616 \\
+\texttt{WAV\_MFCC3} & Acústico & 3.6840 & 7.3068 & 5.4550 \\ \hline
+\end{tabular}
+}
+\end{table}
+
+Si el \textit{dataset} entrara en este estado al algoritmo de agrupamiento, las variables de mayor magnitud escalar dominarían geométricamente el cálculo de las distancias, invisibilizando el aporte de los parámetros de menor escala. Para neutralizar este sesgo, se aplicó una estandarización \textit{Z-score} sobre el conjunto de datos, transformando cada atributo ($x$) para que exhiba una media nula ($\mu = 0$) y una desviación estándar unitaria ($\sigma = 1$):
+
+$$Z = \frac{x - \mu}{\sigma}$$
+
+Con las variables equitativamente escaladas, el \textit{dataset} fue segmentado en tres espacios de evaluación independientes: un entorno puramente cinemático (variables \textit{RAW}), un entorno estrictamente acústico (variables \text{WAV}) y un entorno multimodal. Esta estrategia permite evaluar qué dominio de datos resulta más eficiente para discriminar, de forma autónoma, los diferentes escenarios hemodinámicos presentes a lo largo del fantoma.
+
+\subsubsection{Análisis de Componentes Principales}
+
+Una vez escalada la matriz, el primer paso analítico consistió en evaluar la relevancia de los descriptores extraídos frente a la varianza total. Para ello, se ejecutó un análisis de componentes principales (\textit{PCA}, de sus siglas en inglés) sobre los tres subconjuntos (Cinemático, Acústico y Multimodal).
+
+Bajo este enfoque, los coeficientes de la primera componente principal (PC1) se utilizaron como un criterio de relevancia paramétrica. Dado que este vector captura la dirección de máxima varianza, el peso absoluto asignado a cada variable determina directamente su grado de contribución al sistema.
+
+Para evidenciar el comportamiento de los descriptores según el dominio analizado, la Tabla \ref{tab:pesos_pca_comparativo} consolida las 3 variables con mayor valor para cada subconjunto.
+
+\begin{table}[H]
+\centering
+\caption{Top 3 de variables con mayor influencia en la varianza según el entorno subconjunto.}
+\label{tab:pesos_pca_comparativo}
+\begin{tabular}{llc}
+\hline
+\textbf{Entorno de Análisis} & \textbf{Variable Original} & \textbf{Peso Absoluto (PC1)} \\ \hline
+\multirow{3}{*}{\textbf{Cinemático}} 
+ & \texttt{RAW\_Vmax} & 0.5250 \\
+ & \texttt{RAW\_VarianzaEspacial} & 0.5098 \\
+ & \texttt{RAW\_IndicePulsatilidad} & 0.4692 \\ \hline
+\multirow{3}{*}{\textbf{Acústico}} 
+ & \texttt{WAV\_MFCC2} & 0.4342 \\
+ & \texttt{WAV\_MFCC3} & 0.4100 \\
+ & \texttt{WAV\_MFCC1} & 0.3844 \\ \hline
+\multirow{3}{*}{\textbf{Multimodal}} 
+ & \texttt{RAW\_Vmax} & 0.3346 \\
+ & \texttt{WAV\_MFCC3} & 0.3317 \\
+ & \texttt{WAV\_MFCC2} & 0.3306 \\ \hline
+\end{tabular}
+\end{table}
+
+
+Al evaluar los dominios aislados, se observa que el entorno cinemático está dominado por la Velocidad Máxima y la Varianza Espacial, mientras que el entorno acústico es dirigido en su totalidad por los Coeficientes Cepstrales (\textit{MFCCs}), demostrando la alta capacidad de estos últimos para capturar los cambios en la forma del espectro sonoro.
+
+
+Por otro lado en el modelo multimodal la unificación de las componentes cinemáticas y acústicas alcanzan un grado de representación equivalente. Esto demuestra estadísticamente que las características espectrales extraídas del audio sintetizado poseen un valor analítico.Lejos de ser un mero soporte de retroalimentación para el usuario, el dominio sonoro demuestra ser un descriptor matemáticamente robusto, capturando la dispersión de los datos con el mismo peso que los descriptores cinemáticos.
+
+\subsubsection{Agrupamiento no supervisado}
+
+Una vez hecho el anális mediante \textit{PCA}, el siguiente paso consistió en la segmentación autónoma de los datos. Para ello, se ejecutó el algoritmo \textit{K-Means} ($k=4$) sobre los tres subconjuntos con el objetivo de identificar patrones sin supervisión externa. La calidad geométrica de los clústeres resultantes se evaluó mediante el coeficiente de \textit{Silhouette} y el índice de \textit{Calinski-Harabasz}. 
+
+A modo de marco de referencia, el coeficiente de \textit{Silhouette} opera en un rango acotado de $[-1, 1]$, donde valores positivos cercanos a $1$ indican agrupaciones densas y bien separadas. Por su parte, el índice de \textit{Calinski-Harabasz} carece de un límite superior estricto, el valor se interpreta de manera relativa, donde magnitudes mayores denotan una mejor definición geométrica de los grupos frente a la dispersión general. Los resultados de esto se encuentran en la Tabla \ref{tab:metricas_kmeans}.
+
+\begin{table}[H]
+\centering
+\caption{Métricas de validación geométrica de los clústeres generados por \textit{K-Means} ($k=4$) para cada subconjunto.}
+\label{tab:metricas_kmeans}
+\begin{tabular}{lcc}
+\hline
+\textbf{Entorno de Análisis} & \textbf{Coeficiente de Silhouette} & \textbf{Índice Calinski-Harabasz} \\ \hline
+Cinemático & 0.6174 & 505.75 \\
+Acústico & 0.4331 & 373.75 \\
+Multimodal & 0.4319 & 308.33 \\ \hline
+\end{tabular}
+\end{table}
+
+
+El análisis de las métricas expone que el espacio estrictamente cinemático posee la mayor separabilidad geómetrica, formando agrupaciones densas y claramente distanciadas. La caída de las métricas al incorporar el dominio acústico revela que estos descriptores no son los óptimos para tareas de agrupamiento. El mantener un \textit{silhouette score} de $0.43$ se considera que los datos tienen un agrupamiento débil. Las matrices de contingencia que detallan la distribución cuantitativa de estos clústeres frente a los diferentes escenarios hemodinámicos, para los tres dominios evaluados, se encuentran documentadas en el Anexo \ref{anexo:matrices_kmeans}. 
+
+\subsubsection{Validación perceptiva}
+
+Como culminación del flujo de trabajo, se ejecutó la validación cualitativa de los resultados. El objetivo de esta fase fue comprobar empíricamente si las variaciones hemodinámicas extraídas logran traducirse en firmas acústicas perceptibles y distinguibles para el oído humano.
+
+
+
+\subsubsection{Análisis comparativo: Plano pre-curva (Plano 21)}
+
+En esta primera etapa de la trayectoria ascendente, el flujo aún no ha sido sometido a alteraciones geométricas significativas. La comparación en este plano permite establecer la firma espectral y acústica base para los distintos modelos bajo la condición de estrés.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/validacion/fase3/Normal_stress_Plano21.png}
+        \caption{Fantoma normal}
+        \label{fig:p21_normal}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/validacion/fase3/13_mm_stress_Plano21.png}
+        \caption{Fantoma 13 mm}
+        \label{fig:p21_13mm}
+    \end{subfigure}
+    
+    \vspace{0.4cm}
+    
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/validacion/fase3/11_mm_stress_Plano21.png}
+        \caption{Fantoma 11 mm}
+        \label{fig:p21_11mm}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/validacion/fase3/9_mm_stress_Plano21.png}
+        \caption{Fantoma 9 mm}
+        \label{fig:p21_9mm}
+    \end{subfigure}
+    \caption{\label{fig:comparacion_p21} Evolución espectral en la zona pre-curva (Plano 21) bajo condición de estrés. Se observa el perfil cinemático base previo a la influencia de las alteraciones morfológicas.}
+\end{figure}
+
+\subsubsection{Análisis comparativo: Plano del arco aórtico (Plano 45)}
+
+Al ingresar a la curvatura del arco aórtico, la física del fluido comienza a alterarse de manera natural debido a las fuerzas centrífugas. Este plano permite validar la sensibilidad del sistema para detectar el ensanchamiento espectral inducido por la geometría base, previo al impacto del estrechamiento patológico.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/validacion/fase3/Normal_stress_Plano45.png}
+        \caption{Fantoma normal}
+        \label{fig:p45_normal}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/validacion/fase3/13_mm_stress_Plano45.png}
+        \caption{Fantoma 13 mm}
+        \label{fig:p45_13mm}
+    \end{subfigure}
+    
+    \vspace{0.4cm}
+    
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/validacion/fase3/11_mm_stress_Plano45.png}
+        \caption{Fantoma 11 mm}
+        \label{fig:p45_11mm}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/validacion/fase3/9_mm_stress_Plano45.png}
+        \caption{Fantoma 9 mm}
+        \label{fig:p45_9mm}
+    \end{subfigure}
+    \caption{\label{fig:comparacion_p45} Evolución espectral en el arco aórtico (Plano 45) bajo condición de estrés. Se observa la dispersión frecuencial natural causada por la curvatura y las primeras alteraciones cinemáticas de los modelos patológicos.}
+\end{figure}
+
+
+\subsubsection{Análisis comparativo: Plano de la coartación (Plano 53)}
+
+Alcanzada la garganta de la estenosis, el fluido experimenta su máxima aceleración debido a la conservación de la masa frente a la abrupta reducción del área transversal. Las diferencias acústicas y visuales en este punto evidencian la magnitud de la oclusión.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/validacion/fase3/Normal_stress_Plano53.png}
+        \caption{Fantoma normal}
+        \label{fig:p53_normal}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/validacion/fase3/13_mm_stress_Plano53.png}
+        \caption{Fantoma 13 mm}
+        \label{fig:p53_13mm}
+    \end{subfigure}
+    
+    \vspace{0.4cm}
+    
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/validacion/fase3/11_mm_stress_Plano53.png}
+        \caption{Fantoma 11 mm}
+        \label{fig:p53_11mm}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/validacion/fase3/9_mm_stress_Plano53.png}
+        \caption{Fantoma 9 mm}
+        \label{fig:p53_9mm}
+    \end{subfigure}
+    \caption{\label{fig:comparacion_p53} Comportamiento espectral en la garganta de la estenosis (Plano 53) bajo condición de estrés. Destaca el incremento radical de las velocidades pico a medida que se reduce el diámetro del vaso.}
+\end{figure}
+
+
+
+\subsubsection{Análisis comparativo: Zona post-coartación (Plano 70)}
+
+Aguas abajo del estrechamiento, la descarga del \textit{jet} sistólico y la expansión súbita del diámetro inducen la ruptura de la laminaridad. Este plano resulta crítico para identificar auditiva y visualmente el grado de turbulencia generado por la patología.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/validacion/fase3/Normal_stress_Plano70.png}
+        \caption{Fantoma normal}
+        \label{fig:p70_normal}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/validacion/fase3/13_mm_stress_Plano70.png}
+        \caption{Fantoma 13 mm}
+        \label{fig:p70_13mm}
+    \end{subfigure}
+    
+    \vspace{0.4cm}
+    
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/validacion/fase3/11_mm_stress_Plano70.png}
+        \caption{Fantoma 11 mm}
+        \label{fig:p70_11mm}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/validacion/fase3/9_mm_stress_Plano70.png}
+        \caption{Fantoma 9 mm}
+        \label{fig:p70_9mm}
+    \end{subfigure}
+    \caption{\label{fig:comparacion_p70} Dispersión espectral en la zona de descarga post-coartación (Plano 70) bajo condición de estrés. Se evidencia el ensanchamiento masivo de banda inducido por el \textit{jet} turbulento en los modelos con mayor grado de oclusión.}
+\end{figure}
