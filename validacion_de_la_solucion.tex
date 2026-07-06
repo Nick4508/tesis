@@ -1,4 +1,4 @@
-\section{VALIDACIÓN DE LA SOLUCIÓN}
+\secnumbersection{VALIDACIÓN DE LA SOLUCIÓN}\label{ch:validacion}
 
 El presente capítulo tiene como objetivo fundamental comprobar la eficacia de la solución metodológica y tecnológica propuesta. Para someter el sistema a una prueba rigurosa, se estableció un marco experimental basado en el procesamiento de adquisiciones controladas de resonancia magnética. 
 
@@ -16,9 +16,10 @@ La demostración empírica de la propuesta se divide en dos ejes principales de 
 
 Previa a la exposición de los resultados, es necesario detallar las características del conjunto de datos de prueba utilizado. El marco experimental está compuesto por adquisiciones de \textit{4D Flow MRI} correspondientes a fantomas cardiovasculares. En el ámbito de la hemodinámica, un fantoma es un modelo físico calibrado diseñado específicamente para emular la geometría del sistema cardiovascular.
 
-Para evaluar la capacidad de respuesta del sistema ante alteraciones complejas, el conjunto de pruebas contempló modelos con distintos grados de coartación, un estrechamiento anatómico del vaso que obliga al fluido a acelerarse abruptamente y generar turbulencia. Al procesar diferentes diámetros para esta lesión, se busca verificar si el algoritmo logra capturar y parametrizar acústicamente los diferentes escenarios.
+Para evaluar la capacidad de respuesta del sistema ante alteraciones hemodinámicas complejas, el conjunto de pruebas contempló fantomas que replican la geometría del arco aórtico, abarcando desde la aorta ascendente hasta la porción descendente. En esta última sección se emplazaron distintos grados de coartación, un estrechamiento anatómico del vaso que obliga al fluido a acelerarse y generar turbulencia. Es fundamental destacar un detalle clave en la segmentación de estos datos: se excluyeron intencionalmente las ramificaciones correspondientes a los vasos supraaórticos. 
 
-Para comprobar que el modelo acústico es capaz de distinguir diferentes niveles de intensidad hemodinámica, las geometrías fueron sometidas a dos condiciones de flujo contrastantes:
+Para comprobar que el modelo acústico es capaz de distinguir diferentes niveles de intensidad hemodinámica, las diferentes geometrías fueron sometidas a dos condiciones de flujo contrastantes:
+
 
 \begin{itemize}
     \item \textbf{Condición de reposo (\textit{rest}):} Emula el comportamiento fisiológico basal, definiendo un patrón de velocidades no alterado por factores externos.
@@ -126,38 +127,39 @@ Como se observa en los resultados, el sistema logra extraer la información de l
 Complementando la validación espectral y sonora, es necesario comprobar la correcta ejecución del módulo de emulación del \textit{Color Doppler}. Este componente es sirve para corroborar que el algoritmo proyecta adecuadamente los vectores de velocidad de forma dinámica, respondiendo a la evolución fisiológica del ciclo cardíaco sin introducir artefactos topológicos.
 
 A fin de ilustrar esta capacidad, la Figura \ref{fig:validacion_doppler2d_temporal} detalla el mapeo bidimensional de velocidades para el fantoma sin estenosis (Normal) en condición \textit{rest}. La evaluación se focaliza en el plano transversal 45, zona anatómica representativa de la porción central del conducto. Al desplegar esta proyección en cuatro fases discretas del ciclo cardíaco, es posible visualizar la evolución de las proyecciones generadas.
-
-\begin{figure}[H]
+\begin{figure}[H] %usar !htbp si es necesario
     \centering
-    % Fila 1
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/validacion/fase1/gn_2d_p45_fase5.jpeg} 
-        \caption{Fase 5}
-        \label{fig:mapa2d_f5}
-    \end{subfigure}\hfill
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/validacion/fase1/gn_2d_p45_fase10.jpeg} 
-        \caption{Fase 10}
-        \label{fig:mapa2d_f10}
-    \end{subfigure}
-    
-    \vspace{0.5cm} % Espacio entre filas
-    
-    % Fila 2
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/validacion/fase1/gn_2d_p45_fase15.jpeg} 
-        \caption{Fase 15}
-        \label{fig:mapa2d_f15}
-    \end{subfigure}\hfill
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/validacion/fase1/gn_2d_p45_fase20.jpeg} 
-        \caption{Fase 20}
-        \label{fig:mapa2d_f20}
-    \end{subfigure}
+    \begin{minipage}{0.75\textwidth} % Controla el tamaño global aquí
+        % Fila 1
+        \begin{subfigure}{0.48\linewidth}
+            \centering
+            \includegraphics[width=\linewidth]{figures/validacion/fase1/gn_2d_p45_fase5.jpeg} 
+            \caption{Fase 5}
+            \label{fig:mapa2d_f5}
+        \end{subfigure}\hfill
+        \begin{subfigure}{0.48\linewidth}
+            \centering
+            \includegraphics[width=\linewidth]{figures/validacion/fase1/gn_2d_p45_fase10.jpeg} 
+            \caption{Fase 10}
+            \label{fig:mapa2d_f10}
+        \end{subfigure}
+        
+        \vspace{0.5cm} % Espacio entre filas
+        
+        % Fila 2
+        \begin{subfigure}{0.48\linewidth}
+            \centering
+            \includegraphics[width=\linewidth]{figures/validacion/fase1/gn_2d_p45_fase15.jpeg} 
+            \caption{Fase 15}
+            \label{fig:mapa2d_f15}
+        \end{subfigure}\hfill
+        \begin{subfigure}{0.48\linewidth}
+            \centering
+            \includegraphics[width=\linewidth]{figures/validacion/fase1/gn_2d_p45_fase20.jpeg} 
+            \caption{Fase 20}
+            \label{fig:mapa2d_f20}
+        \end{subfigure}
+    \end{minipage}
     \caption{\label{fig:validacion_doppler2d_temporal} Evolución temporal del \textit{Color Doppler} virtual en el plano 45 del fantoma Normal. Fuente: Elaboración propia.}
 \end{figure}
 
@@ -246,7 +248,7 @@ Con las variables equitativamente escaladas, el \textit{dataset} fue segmentado 
 
 \subsubsection{Análisis de Componentes Principales}
 
-Una vez escalada la matriz, el primer paso analítico consistió en evaluar la relevancia de los descriptores extraídos frente a la varianza total. Para ello, se ejecutó un análisis de componentes principales (\textit{PCA}, de sus siglas en inglés) sobre los tres subconjuntos (Cinemático, Acústico y Multimodal).
+Una vez escalada la matriz, el primer paso analítico consistió en evaluar la relevancia de los descriptores extraídos frente a la varianza total. Para ello, se ejecutó un Análisis de Componentes Principales (\textit{PCA}, de sus siglas en inglés) sobre los tres subconjuntos (Cinemático, Acústico y Multimodal).
 
 Bajo este enfoque, los coeficientes de la primera componente principal (PC1) se utilizaron como un criterio de relevancia paramétrica. Dado que este vector captura la dirección de máxima varianza, el peso absoluto asignado a cada variable determina directamente su grado de contribución al sistema.
 
@@ -278,11 +280,11 @@ Para evidenciar el comportamiento de los descriptores según el dominio analizad
 Al evaluar los dominios aislados, se observa que el entorno cinemático está dominado por la Velocidad Máxima y la Varianza Espacial, mientras que el entorno acústico es dirigido en su totalidad por los Coeficientes Cepstrales (\textit{MFCCs}), demostrando la alta capacidad de estos últimos para capturar los cambios en la forma del espectro sonoro.
 
 
-Por otro lado en el modelo multimodal la unificación de las componentes cinemáticas y acústicas alcanzan un grado de representación equivalente. Esto demuestra estadísticamente que las características espectrales extraídas del audio sintetizado poseen un valor analítico.Lejos de ser un mero soporte de retroalimentación para el usuario, el dominio sonoro demuestra ser un descriptor matemáticamente robusto, capturando la dispersión de los datos con el mismo peso que los descriptores cinemáticos.
+Por otro lado en el modelo multimodal la unificación de las componentes cinemáticas y acústicas alcanza un grado de representación equivalente. Esto demuestra estadísticamente que las características espectrales extraídas del audio sintetizado poseen un valor analítico.Lejos de ser un mero soporte de retroalimentación para el usuario, el dominio sonoro demuestra ser un descriptor matemáticamente robusto, capturando la dispersión de los datos con el mismo peso que los descriptores cinemáticos.
 
 \subsubsection{Agrupamiento no supervisado}
 
-Una vez hecho el anális mediante \textit{PCA}, el siguiente paso consistió en la segmentación autónoma de los datos. Para ello, se ejecutó el algoritmo \textit{K-Means} ($k=4$) sobre los tres subconjuntos con el objetivo de identificar patrones sin supervisión externa. La calidad geométrica de los clústeres resultantes se evaluó mediante el coeficiente de \textit{Silhouette} y el índice de \textit{Calinski-Harabasz}. 
+Una vez hecho el análisis mediante \textit{PCA}, el siguiente paso consistió en la segmentación autónoma de los datos. Para ello, se ejecutó el algoritmo \textit{K-Means} ($k=4$) sobre los tres subconjuntos con el objetivo de identificar patrones sin supervisión externa. La calidad geométrica de los clústeres resultantes se evaluó mediante el coeficiente de \textit{Silhouette} y el índice de \textit{Calinski-Harabasz}. 
 
 A modo de marco de referencia, el coeficiente de \textit{Silhouette} opera en un rango acotado de $[-1, 1]$, donde valores positivos cercanos a $1$ indican agrupaciones densas y bien separadas. Por su parte, el índice de \textit{Calinski-Harabasz} carece de un límite superior estricto, el valor se interpreta de manera relativa, donde magnitudes mayores denotan una mejor definición geométrica de los grupos frente a la dispersión general. Los resultados de esto se encuentran en la Tabla \ref{tab:metricas_kmeans}.
 
@@ -300,30 +302,76 @@ Multimodal & 0.4319 & 308.33 \\ \hline
 \end{table}
 
 
-El análisis de las métricas expone que el espacio estrictamente cinemático posee la mayor separabilidad geómetrica, formando agrupaciones densas y claramente distanciadas. La caída de las métricas al incorporar el dominio acústico revela que estos descriptores no son los óptimos para tareas de agrupamiento. El mantener un \textit{silhouette score} de $0.43$ se considera que los datos tienen un agrupamiento débil. Las matrices de contingencia que detallan la distribución cuantitativa de estos clústeres frente a los diferentes escenarios hemodinámicos, para los tres dominios evaluados, se encuentran documentadas en el Anexo \ref{anexo:matrices_kmeans}. 
+El análisis de las métricas expone que el espacio estrictamente cinemático posee la mayor separabilidad geométrica, formando agrupaciones densas y claramente distanciadas. La caída de las métricas al incorporar el dominio acústico revela que estos descriptores no son los óptimos para tareas de agrupamiento. El mantener un \textit{silhouette score} de $0.43$ se considera que los datos tienen un agrupamiento débil. Las matrices de contingencia que detallan la distribución cuantitativa de estos clústeres frente a los diferentes escenarios hemodinámicos, para los tres dominios evaluados, se encuentran documentadas en el Anexo \ref{anexo:matrices_kmeans}. 
 
 \subsubsection{Validación perceptiva}
 
-Como culminación del flujo de trabajo, se ejecutó la validación cualitativa de los resultados. El objetivo de esta fase fue comprobar empíricamente si las variaciones hemodinámicas extraídas logran traducirse en firmas acústicas perceptibles y distinguibles para el oído humano.
+Como culminación del flujo de trabajo, se validaron cualitativamente los resultados. El objetivo de esta fase fue comprobar empíricamente si las variaciones hemodinámicas extraídas logran traducirse en firmas acústicas perceptibles y distinguibles para el oído humano mediante el método de sonificación propuesto, se utilizó el \textit{dashboard} interactivo para comparar los diferentes fantomas entre sí ya que esta herramienta ajusta automáticamente los ejes para una mejor comparación (ver Figura \ref{fig:dashboard}).
 
+\subsubsection{Definición de las diferentes zonas de análisis}
 
+Para estructurar la evaluación cualitativa y comprender la evolución espacial del fluido, la exploración se centró en cuatro planos transversales a lo largo del \textit{centerline} para los fantomas bajo condición de \textit{stress}. Tomando como referencia la topología de la coartación de 9 mm (Figura \ref{fig:hitos_espaciales}), los planos seleccionados para el análisis comparativo son los siguientes:
 
-\subsubsection{Análisis comparativo: Plano pre-curva (Plano 21)}
+\begin{itemize}
+    \item \textbf{Plano 21 (aorta ascendente):} Situado en la porción inicial del modelo.
 
-En esta primera etapa de la trayectoria ascendente, el flujo aún no ha sido sometido a alteraciones geométricas significativas. La comparación en este plano permite establecer la firma espectral y acústica base para los distintos modelos bajo la condición de estrés.
+    \item \textbf{Plano 45 (arco aórtico):} Ubicado en la curvatura principal.
 
-\begin{figure}[htbp]
+    \item \textbf{Plano 53 (zona pre-coartación):} Situado en la sección de descenso inicial antes de la coartación.
+
+    \item \textbf{Plano 70 (Zona post-coartación):} Situado en la sección de descenso de la aorta, después de la coartación.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.75\textwidth} % Ajusta este valor (ej. 0.65 o 0.85) para cambiar el tamaño global
+        \begin{subfigure}{0.48\linewidth}
+            \centering
+            \includegraphics[width=\linewidth]{figures/validacion/fase3/9mm_plano21.png}
+            \caption{Plano 21 (aorta ascendente)}
+            \label{fig:geo_p21}
+        \end{subfigure}\hfill
+        \begin{subfigure}{0.48\linewidth}
+            \centering
+            \includegraphics[width=\linewidth]{figures/validacion/fase3/9mm_plano45.png}
+            \caption{Plano 45 (arco aórtico)}
+            \label{fig:geo_p45}
+        \end{subfigure}
+        
+        \vspace{0.4cm}
+        
+        \begin{subfigure}{0.48\linewidth}
+            \centering
+            \includegraphics[width=\linewidth]{figures/validacion/fase3/9mm_plano53.png}
+            \caption{Plano 53 (pre-coartación)}
+            \label{fig:geo_p53}
+        \end{subfigure}\hfill
+        \begin{subfigure}{0.48\linewidth}
+            \centering
+            \includegraphics[width=\linewidth]{figures/validacion/fase3/9mm_plano70.png}
+            \caption{Plano 70 (post-coartación)}
+            \label{fig:geo_p70}
+        \end{subfigure}
+    \end{minipage}
+    \caption{\label{fig:hitos_espaciales} Representación de la anatomía del fantoma (modelo de 9 mm) ilustrando la ubicación de los cuatro zonas de análisis. La línea verde representa el \textit{centerline} del vaso, sobre el cual se proyectan los planos transversales de corte para la síntesis espectral y acústica. Fuente: Elaboración propia.}
+\end{figure}
+
+\newpage
+
+\subsubsection{Análisis comparativo: Aorta ascendente (plano 21)}
+
+\begin{figure}[H]
     \centering
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/validacion/fase3/Normal_stress_Plano21.png}
-        \caption{Fantoma normal}
+        \caption{\href{https://drive.google.com/file/d/1zrQl1XJSOf9ofBQpRo_iQL9uMMrF-h_x/view?usp=sharing}{Fantoma normal \textbf{(Escuchar)}}}
         \label{fig:p21_normal}
     \end{subfigure}\hfill
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/validacion/fase3/13_mm_stress_Plano21.png}
-        \caption{Fantoma 13 mm}
+        \caption{\href{https://drive.google.com/file/d/1QgG6hhDPyQgPaR8se5S9pWNtd6FQqc2C/view?usp=sharing}{Fantoma 13 mm \textbf{(Escuchar)}}}
         \label{fig:p21_13mm}
     \end{subfigure}
     
@@ -332,34 +380,36 @@ En esta primera etapa de la trayectoria ascendente, el flujo aún no ha sido som
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/validacion/fase3/11_mm_stress_Plano21.png}
-        \caption{Fantoma 11 mm}
+        \caption{\href{https://drive.google.com/file/d/1QgG6hhDPyQgPaR8se5S9pWNtd6FQqc2C/view?usp=sharing}{Fantoma 11 mm \textbf{(Escuchar)}}}
         \label{fig:p21_11mm}
     \end{subfigure}\hfill
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/validacion/fase3/9_mm_stress_Plano21.png}
-        \caption{Fantoma 9 mm}
+        \caption{\href{https://drive.google.com/file/d/1fzweoXFw8Qojz-GIiFbCdpIbZw94VIMx/view?usp=sharing}{Fantoma 9 mm \textbf{(Escuchar)}}}
         \label{fig:p21_9mm}
     \end{subfigure}
-    \caption{\label{fig:comparacion_p21} Evolución espectral en la zona pre-curva (Plano 21) bajo condición de estrés. Se observa el perfil cinemático base previo a la influencia de las alteraciones morfológicas.}
+    \caption{\label{fig:comparacion_p21} Evolución espectral en la zona de la aorta ascendente bajo condición de estrés. Fuente: Elaboración propia.}
 \end{figure}
 
-\subsubsection{Análisis comparativo: Plano del arco aórtico (Plano 45)}
+En esta primera etapa de la trayectoria ascendente, el flujo aún no ha sido sometido a alteraciones geométricas significativas por lo que los espectrogramas son muy parecidos entre sí. Por otro lado, el audio generado tiene sutilezas entre sí, propias del flujo. Por lo que la evaluación de este plano sirve para comprender el estado hemodinámico inicial con el que el chorro ingresa al sistema en los distintos modelos.
 
-Al ingresar a la curvatura del arco aórtico, la física del fluido comienza a alterarse de manera natural debido a las fuerzas centrífugas. Este plano permite validar la sensibilidad del sistema para detectar el ensanchamiento espectral inducido por la geometría base, previo al impacto del estrechamiento patológico.
 
-\begin{figure}[htbp]
+\newpage
+\subsubsection{Análisis comparativo: Arco aórtico (plano 45)}
+
+\begin{figure}[H]
     \centering
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/validacion/fase3/Normal_stress_Plano45.png}
-        \caption{Fantoma normal}
+        \caption{\href{https://drive.google.com/file/d/1ANWzJo5JMgCqKBQW7OwcKgw1O7Vpofu7/view?usp=sharing}{Fantoma normal \textbf{(Escuchar)}}}
         \label{fig:p45_normal}
     \end{subfigure}\hfill
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/validacion/fase3/13_mm_stress_Plano45.png}
-        \caption{Fantoma 13 mm}
+        \caption{\href{https://drive.google.com/file/d/1_xKWrb7YFaJvv5M8ejf0ypCnZyRcKkGD/view?usp=sharing}{Fantoma 13 mm \textbf{(Escuchar)}}}
         \label{fig:p45_13mm}
     \end{subfigure}
     
@@ -368,35 +418,35 @@ Al ingresar a la curvatura del arco aórtico, la física del fluido comienza a a
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/validacion/fase3/11_mm_stress_Plano45.png}
-        \caption{Fantoma 11 mm}
+        \caption{\href{https://drive.google.com/file/d/1nxAaY-6o71qdydpl7RKwttiiKsIps7FB/view?usp=sharing}{Fantoma 11 mm \textbf{(Escuchar)}}}
         \label{fig:p45_11mm}
     \end{subfigure}\hfill
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/validacion/fase3/9_mm_stress_Plano45.png}
-        \caption{Fantoma 9 mm}
+        \caption{\href{https://drive.google.com/file/d/1eONY3GuEQsmD2kPhVUpaSpS2lV4CTeWf/view?usp=sharing}{Fantoma 9 mm \textbf{(Escuchar)}}}
         \label{fig:p45_9mm}
     \end{subfigure}
-    \caption{\label{fig:comparacion_p45} Evolución espectral en el arco aórtico (Plano 45) bajo condición de estrés. Se observa la dispersión frecuencial natural causada por la curvatura y las primeras alteraciones cinemáticas de los modelos patológicos.}
+    \caption{\label{fig:comparacion_p45} Evolución espectral en la zona del arco aórtico bajo condición de estrés. Fuente: Elaboración propia.}
 \end{figure}
 
+Al ingresar a la curvatura del arco aórtico, la física del fluido comienza a alterarse de manera natural, las velocidades máximas son considerablemente menores que en el plano 21. Además, escuchando detenidamente cada salida de audio, se puede percibir en un sistema estéreo la espacialización del audio (como viaja de un auricular al otro). Este plano permite validar la sensibilidad del sistema al momento de sonificar.
 
-\subsubsection{Análisis comparativo: Plano de la coartación (Plano 53)}
+\newpage
+\subsubsection{Análisis comparativo: Pre-coartación (plano 53)}
 
-Alcanzada la garganta de la estenosis, el fluido experimenta su máxima aceleración debido a la conservación de la masa frente a la abrupta reducción del área transversal. Las diferencias acústicas y visuales en este punto evidencian la magnitud de la oclusión.
-
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/validacion/fase3/Normal_stress_Plano53.png}
-        \caption{Fantoma normal}
+        \caption{\href{https://drive.google.com/file/d/14uRrEhNKSVlCefV5a0ek37HPGreF7T_u/view?usp=sharing}{Fantoma normal \textbf{(Escuchar)}}}
         \label{fig:p53_normal}
     \end{subfigure}\hfill
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/validacion/fase3/13_mm_stress_Plano53.png}
-        \caption{Fantoma 13 mm}
+        \caption{\href{https://drive.google.com/file/d/1cmUCUCI-ggu4FUFl2lXbGvP9RNlGH8-B/view?usp=sharing}{Fantoma 13 mm \textbf{(Escuchar)}}}
         \label{fig:p53_13mm}
     \end{subfigure}
     
@@ -405,36 +455,35 @@ Alcanzada la garganta de la estenosis, el fluido experimenta su máxima acelerac
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/validacion/fase3/11_mm_stress_Plano53.png}
-        \caption{Fantoma 11 mm}
+        \caption{\href{https://drive.google.com/file/d/1ui-2jzbB0ATr0YN6PvfbRgMdqus8z0js/view?usp=sharing}{Fantoma 11 mm \textbf{(Escuchar)}}}
         \label{fig:p53_11mm}
     \end{subfigure}\hfill
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/validacion/fase3/9_mm_stress_Plano53.png}
-        \caption{Fantoma 9 mm}
+        \caption{\href{https://drive.google.com/file/d/1ZUaDdFk8baGL7WiBWUIlHLgO9nRFLeS_/view?usp=sharing}{Fantoma 9 mm \textbf{(Escuchar)}}}
         \label{fig:p53_9mm}
     \end{subfigure}
-    \caption{\label{fig:comparacion_p53} Comportamiento espectral en la garganta de la estenosis (Plano 53) bajo condición de estrés. Destaca el incremento radical de las velocidades pico a medida que se reduce el diámetro del vaso.}
+    \caption{\label{fig:comparacion_p53} Evolución espectral en la zona pre-coartación bajo condición de estrés. Fuente: Elaboración propia.}
 \end{figure}
 
+En esta sección previo a la coartación en los casos de estenosis, se pueden observar diferencias entre el espectrograma normal y los demás. Principalmente, se observa como en la fase de sístole se ve el ensanchamiento espectral. Además, escuchando cada salida de audio, se puede percibir la diferencia entre el caso normal y los otros, ya que no se percibe tanto la espacialización.
 
+\newpage
+\subsubsection{Análisis comparativo: Zona post-coartación (plano 70)}
 
-\subsubsection{Análisis comparativo: Zona post-coartación (Plano 70)}
-
-Aguas abajo del estrechamiento, la descarga del \textit{jet} sistólico y la expansión súbita del diámetro inducen la ruptura de la laminaridad. Este plano resulta crítico para identificar auditiva y visualmente el grado de turbulencia generado por la patología.
-
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/validacion/fase3/Normal_stress_Plano70.png}
-        \caption{Fantoma normal}
+        \caption{\href{https://drive.google.com/file/d/1dRre8g44xnWatR7v9R52oBInoiCsI51p/view?usp=sharing}{Fantoma normal \textbf{(Escuchar)}}}
         \label{fig:p70_normal}
     \end{subfigure}\hfill
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/validacion/fase3/13_mm_stress_Plano70.png}
-        \caption{Fantoma 13 mm}
+        \caption{\href{https://drive.google.com/file/d/1bNvNf3bejuiYRnCMSFRO3kMLtU_qm03H/view?usp=sharing}{Fantoma 13 mm \textbf{(Escuchar)}}}
         \label{fig:p70_13mm}
     \end{subfigure}
     
@@ -443,14 +492,26 @@ Aguas abajo del estrechamiento, la descarga del \textit{jet} sistólico y la exp
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/validacion/fase3/11_mm_stress_Plano70.png}
-        \caption{Fantoma 11 mm}
+        \caption{\href{https://drive.google.com/file/d/1H2GXm2JMhLdzb_YiJ4C9pnvIgajwBhfa/view?usp=sharing}{Fantoma 11 mm \textbf{(Escuchar)}}}
         \label{fig:p70_11mm}
     \end{subfigure}\hfill
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/validacion/fase3/9_mm_stress_Plano70.png}
-        \caption{Fantoma 9 mm}
+        \caption{\href{https://drive.google.com/file/d/19Hm0UEIIQk91hyb_0LfmiXX035wHE5Cy/view?usp=sharing}{Fantoma 9 mm \textbf{(Escuchar)}}}
         \label{fig:p70_9mm}
     \end{subfigure}
-    \caption{\label{fig:comparacion_p70} Dispersión espectral en la zona de descarga post-coartación (Plano 70) bajo condición de estrés. Se evidencia el ensanchamiento masivo de banda inducido por el \textit{jet} turbulento en los modelos con mayor grado de oclusión.}
+    \caption{\label{fig:comparacion_p70} Evolución espectral en la zona post-coartación bajo condición de estrés. Fuente: Elaboración propia.}
 \end{figure}
+
+En este último plano de estudio, se pueden notar las grandes diferencias entre los diferentes casos. Una gran diferencia es la escala, por un lado el caso de 9 mm se puede ver con maxímos de hasta 300 cm/s, mientras que para el caso normal no llega a los 100 cm/s. Además, se puede ver como el flujo es anterógrado pero produce un ensanchamiento espectral evidente. Por otro lado, escuchando cada salida de audio se puede notar como los casos con estenosis ``llenan el espacio'', es decir, en un sistema estéreo se puede escuchar por ambos auriculares la mayoría del tiempo.
+
+Para complementar este análisis, se deja en el Anexo \ref{anexo:comparacion_casos} la comparación entre los diferentes planos para cada segmentacion, pero bajo la condición de reposo (\text{rest}). Junto con la comparación de los mismos casos, en el Anexo \ref{anexo:casos_borde} se deja la comparación de los casos bordes (plano 5 y 85) para los fantomas normal y 9 mm, en las codiciones de estrés y reposo. Además se deja un repositorio con la totalidad de los audios generados (\href{https://drive.google.com/drive/folders/1n6FfNJn5eESQtlfNskv2HZ44u8r9o8lS?usp=sharing}{link del enlace}). 
+
+
+Es a través del análisis de los diferentes planos que podemos decir que la herramienta es capaz de capturar la hemodinámica y transformarla mediante la emulación del ultrasonido Doppler, en espectrogramas y señales acústicas distinguibles y coherentes.
+
+\subsection{Síntesis del capitulo}
+En este capítulo se expusieron los resultados experimentales del modelo de sonificación aplicado a datos de \textit{4D Flow MRI}. En primer lugar, se verificó la extracción cinemática a través de mapas bidimensionales, como el \textit{Color Doppler} virtual. 
+
+Posteriormente, se presentó la evolución de los espectrogramas y señales acústicas generadas. La comparación estructurada entre la anatomía sana y los distintos grados de coartación (bajo condiciones de reposo y estrés) permitió registrar los diferentes comportamientos del flujo sanguíneo a lo largo del fantoma. Comprobando la validez de la herramienta en capturar estas diferencias y generar en consecuencia las salidad correspondientes.

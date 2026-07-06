@@ -1,5 +1,46 @@
-\secnumbersection{CONCLUSIONES}
+\secnumbersection{CONCLUSIONES}\label{ch:conclusiones}
 
-Las Conclusiones son, según algunos especialistas, el aspecto principal de una memoria, ya que reflejan el aprendizaje final del autor del documento. En ellas se tiende a considerar los alcances y limitaciones de la propuesta de solución, establecer de forma simple y directa los resultados, discutir respecto a la validez de los objetivos formulados, identificar las principales contribuciones y aplicaciones del trabajo realizado, así como su impacto o aporte a la organización o a los actores involucrados. Otro aspecto que tiende a incluirse son recomendaciones para quienes se sientan motivados por el tema y deseen profundizarlo, o lineamientos de una futura ampliación del trabajo.
+\subsection{Conclusiones generales}
 
-\underline{Todo esto debe sintetizarse en al menos 5 páginas.}
+El principal aporte de esta memoria radica en el diseño, implementación y validación de una nueva metodología computacional capaz de transformar adquisiciones hemodinámicas de \textit{4D Flow MRI} en representaciones auditivas. El desarrollo de esta nueva forma de análisis integra diferentes campos de estudio, tales como el procesamiento de imágenes médicas, el procesamiento digital de señales y la mecánica de fluidos cardiovasculares (hemodinámica).
+
+La metodología desarrollada se materializó en dos herramientas computacionales principales:
+
+\begin{itemize}
+    \item \textbf{Explorador hemodinámico:} Constituyó el núcleo del motor acústico y espectral. Operó como la plataforma base durante las fases iniciales para iterar sobre los algoritmos de proyección de velocidades y definir las estrategias de síntesis sonora.
+
+    \item \textbf{Comparador interactivo:} Se consolidó como el instrumento principal para la evaluación cruzada de los escenarios de estudio. Heredando la arquitectura de procesamiento del \textit{Explorador hemodinámico}, esta interfaz facilitó un contraste rápido, simultáneo y eficiente de las firmas acústicas y espectrales entre las distintas morfologías.
+\end{itemize}
+
+A través de la utilización de estas interfaces sobre los datos extraídos de los diferentes fantomas, se logró evaluar empíricamente el desempeño del modelo computacional. Los resultados evidencian la capacidad de este último para producir salidas concordantes con la entrada hemodinámica local. De esta manera, se demuestra la aptitud del sistema para capturar y traducir las variaciones del fluido en firmas acústicas y espectrales distintivas.
+
+Se comprobó que el mapeo sonoro es sensible a la física del sistema. Al evaluar los distintos grados de coartación bajo condiciones de estrés, las representaciones espectrales mostraron cambios proporcionales a su nivel. Así, se confirma que la sonificación resultante actúa como un reflejo del comportamiento del fluido.
+
+
+Adicionalmente, el análisis estadístico y de aprendizaje no supervisado permitió capturar el valor analítico de los descriptores extraídos. Mediante el Análisis de Componentes Principales (\textit{PCA}), se comprobó que las características espectrales —particularmente los coeficientes cepstrales (\textit{MFCCs})— poseen un peso estadístico equivalente a las variables cinemáticas dentro de un modelo multimodal. Sin embargo, la evaluación del agrupamiento autónomo mediante \textit{K-Means} reveló que, si bien el dominio cinemático presenta una alta separabilidad geométrica, la incorporación de las características acústicas introduce una mayor complejidad topológica, resultando en agrupamientos más débiles. En conclusión, aunque bajo los criterios de sonificación establecidos el sonido sintetizado es un descriptor paramétricamente robusto para capturar la varianza del flujo, su naturaleza requiere enfoques distintos para tareas de clasificación.
+
+\subsection{Cumplimiento de objetivos}
+
+El objetivo general de esta memoria se alcanzó de manera satisfactoria mediante el cumplimiento progresivo de los objetivos específicos planteados:
+
+En primer lugar, la extracción y procesamiento de métricas cinemáticas se logró con éxito mediante la asimilación de las matrices volumétricas de \textit{4D Flow MRI}. El algoritmo implementado permitió discretizar el dominio espacial a lo largo del \textit{centerline}, extrayendo perfiles transversales que facilitaron el cálculo de variables como la velocidad máxima, la varianza espacial y el índice de pulsatilidad.
+
+En segundo lugar, la síntesis de características acústicas se concretó a través del desarrollo del motor de sonificación. Este módulo logró emular computacionalmente el ultrasonido Doppler, mapeando directamente los parámetros hemodinámicos locales hacia señales de audio. De estas señales se extrajeron descriptores como los  coeficientes cepstrales de mel (\textit{MFCCs}).
+
+El tercer objetivo se materializó con la programación de las herramientas de análisis, destacando el \textit{Explorador hemodinámico} y el \textit{Comparador interactivo}. Estas interfaces gráficas permitieron la navegación espacial sobre la geometría tridimensional del vaso sanguíneo, logrando una sincronización precisa entre la posición anatómica, la retroalimentación visual (espectrogramas) y la reproducción auditiva.
+
+Finalmente, la coherencia del espacio de características fue validada empíricamente al contrastar los distintos fantomas bajo condiciones de reposo y estrés producen firmas acústicas distinguibles entre sí. De este modo, se confirma que el modelo de sonificación logra una traducción fiel, donde la severidad de la coartación y el estrés del caudal generan firmas sonoras coherentes y perceptualmente distinguibles.
+
+\subsection{Trabajo a futuro}
+
+A partir de los resultados obtenidos y las limitaciones identificadas durante el desarrollo de esta memoria, se proponen las siguientes líneas de investigación para la expansión y optimización de la metodología:
+
+\begin{itemize}
+    \item \textbf{Optimización de la emulación Doppler:} Aunque el motor actual considera el ángulo de insonación y el volumen de muestra, su implementación inicial asume condiciones idealizadas. Se propone desarrollar un modelo de insonación dinámico, donde el ángulo de incidencia y las dimensiones del volumen de muestra sean espacialmente variables.
+
+    \item \textbf{Exploración de estrategias de sonificación:} Dado que el esquema de parametrización actual en \textit{PMSon} se basó en criterios heurísticos y experiencia en síntesis de audio, existe un amplio margen para investigar nuevas formas de representación. Se sugiere diseñar y evaluar nuevas lógicas de mapeo de  parámetros, posiblemente integrando estudios psicoacústicos que determinen qué timbres o motores de síntesis facilitan una mejor discriminación auditiva para el usuario.
+    
+    \item \textbf{Expansión del análisis no supervisado:} Se propone ampliar el espacio de características acústicas extraídas para enriquecer la representación matemática. Asimismo, para superar los agrupamientos débiles observados, se plantea sustituir o complementar \textit{K-Means} con otros algoritmos de aprendizaje no supervisado capaces de manejar topologías de datos más complejas.
+    
+    \item \textbf{Validación clínica (\textit{in-vivo}):} El paso fundamental para consolidar esta herramienta es su transición hacia el procesamiento de adquisiciones \textit{4D Flow MRI} reales. Evaluar el sistema con datos \textit{in-vivo} permitirá medir la robustez del algoritmo frente a variaciones biológicas.
+\end{itemize}
