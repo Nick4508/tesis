@@ -14,7 +14,7 @@ La demostración empírica de la propuesta se divide en dos ejes principales de 
 
 \subsection{Datos experimentales}
 
-Previa a la exposición de los resultados, es necesario detallar las características del conjunto de datos de prueba utilizado. El marco experimental está compuesto por adquisiciones de \textit{4D Flow MRI} correspondientes a fantomas cardiovasculares. En el ámbito de la hemodinámica, un fantoma es un modelo físico calibrado diseñado específicamente para emular la geometría del sistema cardiovascular.
+Previo a la exposición de los resultados, es necesario detallar las características del conjunto de datos de prueba utilizado. El marco experimental está compuesto por adquisiciones de \textit{4D Flow MRI} correspondientes a fantomas cardiovasculares. En el ámbito de la hemodinámica, un fantoma es un modelo físico calibrado diseñado específicamente para emular la geometría del sistema cardiovascular.
 
 Para evaluar la capacidad de respuesta del sistema ante alteraciones hemodinámicas complejas, el conjunto de pruebas contempló fantomas que replican la geometría del arco aórtico, abarcando desde la aorta ascendente hasta la porción descendente. En esta última sección se emplazaron distintos grados de coartación, un estrechamiento anatómico del vaso que obliga al fluido a acelerarse y generar turbulencia. Es fundamental destacar un detalle clave en la segmentación de estos datos: se excluyeron intencionalmente las ramificaciones correspondientes a los vasos supraaórticos. 
 
@@ -54,7 +54,7 @@ Definidos los ocho escenarios de estudio, la primera fase de validación aborda 
 
 La verificación de este flujo de trabajo se expone en dos partes. Primero, se analiza el desempeño del algoritmo base (Etapa \ref{item:etapa1}), demostrando cómo el sistema es capaz de integrar la anatomía, extraer la cinemática del fluido y sintetizar su respectivo audio. Segundo, se documenta la automatización del proceso (Etapa \ref{item:etapa2}), confirmando que el código logró procesar con éxito la totalidad de los escenarios de prueba.
 
-\subsubsection{Validación de la reconstrucción geómetrica}
+\subsubsection{Validación de la reconstrucción geométrica}
 
 El paso inicial en la ejecución del flujo de trabajo consistió en corroborar la correcta lectura e integración de los datos anatómicos de entrada. El módulo de procesamiento arranca con la ingesta de la segmentación volumétrica del vaso y proyectando espacialmente su respectivo \textit{centerline}. 
 
@@ -84,7 +84,7 @@ Como se observa en la representación gráfica, el sistema logra integrar la iso
 
 \subsubsection{Validación de la síntesis acústica y análisis espectral}
 
-Una vez validada la discretización del \textit{centerline}, el flujo de trabajo procede con la proyección de las velocidadades y su transformación en señales sonoras. El objetivo en esta instancia es corroborar que el motor de emulación es capaz de procesar la cinemática aislada y generar exitosamente la síntesis acústica y espectrales.
+Una vez validada la discretización del \textit{centerline}, el flujo de trabajo procede con la proyección de las velocidades y su transformación en señales sonoras. El objetivo en esta instancia es corroborar que el motor de emulación es capaz de procesar la cinemática aislada y generar exitosamente la síntesis acústica y espectral.
 
 Para evidenciar la correcta ejecución de esta etapa, la Figura \ref{fig:sintesis_acustica} expone las salidas generadas por el \textit{software} para el fantoma normal (plano 45) y el fantoma con coartación de 9 mm (plano 70).
 
@@ -124,7 +124,7 @@ Para evidenciar la correcta ejecución de esta etapa, la Figura \ref{fig:sintesi
 
 Como se observa en los resultados, el sistema logra extraer la información de los planos de corte y traducirla en archivos acústicos y gráficos estructurados. La clara diferencia en las escalas y amplitudes registradas entre ambos modelos confirma que el algoritmo de síntesis responde a los distintos perfiles de velocidad del \textit{4D Flow MRI}, comprobando el correcto desempeño operativo del módulo base. Para complementar esta validación visual, es posible acceder a la reproducción de las señales generadas mediante los siguientes enlaces: \href{https://drive.google.com/file/d/1xQmC3SaCplyq4cFz9ADJMwVXydT0yq6e/view?usp=sharing}{salida acústica del fantoma normal (a)} y \href{https://drive.google.com/file/d/1KgReb6jlhsudJGxGEyWbSvPVMoqxSP4G/view?usp=sharing}{salida acústica del fantoma de 9 mm (b)}.
 
-Complementando la validación espectral y sonora, es necesario comprobar la correcta ejecución del módulo de emulación del \textit{Color Doppler}. Este componente es sirve para corroborar que el algoritmo proyecta adecuadamente los vectores de velocidad de forma dinámica, respondiendo a la evolución fisiológica del ciclo cardíaco sin introducir artefactos topológicos.
+Complementando la validación espectral y sonora, es necesario comprobar la correcta ejecución del módulo de emulación del \textit{Color Doppler}. Este componente sirve para corroborar que el algoritmo proyecta adecuadamente los vectores de velocidad de forma dinámica, respondiendo a la evolución fisiológica del ciclo cardíaco sin introducir artefactos topológicos.
 
 A fin de ilustrar esta capacidad, la Figura \ref{fig:validacion_doppler2d_temporal} detalla el mapeo bidimensional de velocidades para el fantoma sin estenosis (Normal) en condición \textit{rest}. La evaluación se focaliza en el plano transversal 45, zona anatómica representativa de la porción central del conducto. Al desplegar esta proyección en cuatro fases discretas del ciclo cardíaco, es posible visualizar la evolución de las proyecciones generadas.
 \begin{figure}[H] %usar !htbp si es necesario
@@ -165,15 +165,15 @@ A fin de ilustrar esta capacidad, la Figura \ref{fig:validacion_doppler2d_tempor
 
 Como se aprecia en la secuencia visual, el sistema aísla exitosamente el plano transversal que atraviesa el vaso, conteniendo exclusivamente los perfiles hemodinámicos de la región de interés. 
 
-En síntesis, el sistema ha demostrado su capacidad para procesar la complejidad de los datos provenientes de \textit{4D Flow MRI}, logrando aislar topológicamente el vaso y traducir su cinemática en representaciones acústicas, espectrales y espaciales consistentes entre sí. Aunque esta herramienta sirve para una primera inspección cualitativa, el análisis comparativo entre múltiples morfologías y secciones transversales exige un enfoque escalable. Por lo que la siguiente etapa de validación abordará la segunda fase de la investigación, comprobando cómo este núcleo de procesamiento fue automatizado para extraer, de forma masiva, los descriptores numéricos que caracterizan la hemodinámica de todos los modelos de estudio.
+En síntesis, el sistema ha demostrado su capacidad para procesar la complejidad de los datos provenientes de \textit{4D Flow MRI}, logrando aislar topológicamente el vaso y traducir su cinemática en representaciones acústicas, espectrales y espaciales consistentes entre sí. Aunque esta herramienta sirve para una primera inspección cualitativa, el análisis comparativo entre múltiples morfologías y secciones transversales exige un enfoque escalable. Por lo tanto, la siguiente etapa de validación abordará la segunda fase de la investigación, comprobando cómo este núcleo de procesamiento fue automatizado para extraer, de forma masiva, los descriptores numéricos que caracterizan la hemodinámica de todos los modelos de estudio.
 
 \subsubsection{Validación de la extracción de parámetros y procesamiento masivo}
 
 Tras comprobar la correcta emulación del ultrasonido Doppler, la validación de la segunda etapa se enfoca estrictamente en verificar el correcto desempeño del algoritmo de procesamiento por lotes (\textit{batch processing}). El objetivo de esta fase fue procesar ininterrumpidamente las matrices de los diferentes escenarios hemodinámicos para consolidar la extracción de características cinemáticas y acústicas, garantizando así la autonomía del sistema frente a las restricciones de hardware.
 
-El volumen de datos proveniente de \textit{4D Flow MRI} representa un desafío computacional significativo. Al procesar de forma continua los 8 modelos de estudio (evaluando un total de 720 secciones transversales), cargar y procesar la totalidad de estas secciones implicaba un riesgo inminente de saturación y colapsamiento de la memoria RAM del equipo. Este riesgo se mitigó de manera fragmentada las proyecciones de cada plano hacia el almacenamiento local en archivos binarios de MATLAB (\textit{.mat}).
+El volumen de datos proveniente de \textit{4D Flow MRI} representa un desafío computacional significativo. Al procesar de forma continua los 8 modelos de estudio (evaluando un total de 720 secciones transversales), cargar y procesar la totalidad de estas secciones implicaba un riesgo inminente de saturación y colapsamiento de la memoria \textit{RAM} del equipo. Este riesgo se mitigó exportando de manera fragmentada las proyecciones de cada plano hacia el almacenamiento local en archivos binarios de MATLAB (\textit{.mat}).
 
-Como parte de esta estrategia de contención de memoria, se trabajó sobre el formato de los datos. En una primera instancia, el sistema se configuró para operar y exportar en precisión simple (\textit{single}, 32 bits), con el propósito de reducir la carga computacional y prevenir el colapso del sistema. No obstante, las pruebas de rendimiento demostraron que la exportación iterativa era lo suficientemente robusta como para gestionar y liberar la memoria de forma eficiente. Esto permitió escalar la carga computacional, operando y exportando formato nativo de precisión doble (\textit{double}, 64 bits) sin comprometer la estabilidad del hardware. La Figura \ref{fig:exportacion_batch_precision} evidencia el impacto directo en la huella de memoria al transicionar entre ambas precisiones.
+Como parte de esta estrategia de contención de memoria, se trabajó sobre el formato de los datos. En una primera instancia, el sistema se configuró para operar y exportar en precisión simple (\textit{single}, 32 bits), con el propósito de reducir la carga computacional y prevenir el colapso del sistema. No obstante, las pruebas de rendimiento demostraron que la exportación iterativa era lo suficientemente robusta como para gestionar y liberar la memoria de forma eficiente. Esto permitió escalar la carga computacional, operando y exportando en formato nativo de precisión doble (\textit{double}, 64 bits) sin comprometer la estabilidad del hardware. La Figura \ref{fig:exportacion_batch_precision} evidencia el impacto directo en la huella de memoria al transicionar entre ambas precisiones.
 
 \begin{figure}[H]
     \centering
@@ -195,7 +195,7 @@ Como parte de esta estrategia de contención de memoria, se trabajó sobre el fo
     \caption{\label{fig:exportacion_batch_precision} Comparativa de la huella de almacenamiento, el procesamiento por lotes permitió procesar y exportar las matrices en formato de precisión \textit{double}. Fuente: Elaboración propia.}
 \end{figure}
 
-Adicionalmente, la inspección de estos matrices exportadas sirvió como validación del comportamiento geométrico del algoritmo. Como se observa en la progresión de los archivos, la huella de almacenamiento presenta una varianza natural (fluctuando entre $\sim$200 KB y $\sim$500 KB bajo el estándar de 64 bits). Esta fluctuación no es anómala, sino que responde directamente al área transversal de cada corte: planos anatómicos amplios capturan más vóxeles de flujo y generan matrices más pesadas, mientras que las zonas estrechas producen arreglos más ligeros. Esta correspondencia demuestra que el sistema aísla y se adapta dinámicamente a la morfología real del vaso iteración tras iteración.
+Adicionalmente, la inspección de estas matrices exportadas sirvió como validación del comportamiento geométrico del algoritmo. Como se observa en la progresión de los archivos, la huella de almacenamiento presenta una varianza natural (fluctuando entre $\sim$200 KB y $\sim$500 KB bajo el estándar de 64 bits). Esta fluctuación no es anómala, sino que responde directamente al área transversal de cada corte: planos anatómicos amplios capturan más vóxeles de flujo y generan matrices más pesadas, mientras que las zonas estrechas producen arreglos más ligeros. Esta correspondencia demuestra que el sistema aísla y se adapta dinámicamente a la morfología real del vaso iteración tras iteración.
 
 La correcta generación de este repositorio permitió que el módulo de parametrización (\textit{Feature Extraction}) operara de manera segura y eficiente. El algoritmo extrajo con éxito los descriptores cinemáticos y sonoros correspondientes, consolidando estos en un \textit{dataset}. 
 
@@ -240,9 +240,12 @@ Previo a la ejecución de los algoritmos de aprendizaje automático, es necesari
 }
 \end{table}
 
-Si el \textit{dataset} entrara en este estado al algoritmo de agrupamiento, las variables de mayor magnitud escalar dominarían geométricamente el cálculo de las distancias, invisibilizando el aporte de los parámetros de menor escala. Para neutralizar este sesgo, se aplicó una estandarización \textit{Z-score} sobre el conjunto de datos, transformando cada atributo ($x$) para que exhiba una media nula ($\mu = 0$) y una desviación estándar unitaria ($\sigma = 1$):
+Si el \textit{dataset} entrara en este estado al algoritmo de agrupamiento, las variables de mayor magnitud escalar dominarían geométricamente el cálculo de las distancias, invisibilizando el aporte de los parámetros de menor escala. Para neutralizar este sesgo, se aplicó una estandarización \textit{Z-score} sobre el conjunto de datos mediante la ecuación (\ref{eq:normalización_z}), transformando cada atributo ($x$) para que exhiba una media nula ($\mu = 0$) y una desviación estándar unitaria ($\sigma = 1$):
 
-$$Z = \frac{x - \mu}{\sigma}$$
+\begin{equation}
+    Z = \frac{x - \mu}{\sigma}
+    \label{eq:normalización_z}
+\end{equation}
 
 Con las variables equitativamente escaladas, el \textit{dataset} fue segmentado en tres espacios de evaluación independientes: un entorno puramente cinemático (variables \textit{RAW}), un entorno estrictamente acústico (variables \text{WAV}) y un entorno multimodal. Esta estrategia permite evaluar qué dominio de datos resulta más eficiente para discriminar, de forma autónoma, los diferentes escenarios hemodinámicos presentes a lo largo del fantoma.
 
@@ -280,7 +283,7 @@ Para evidenciar el comportamiento de los descriptores según el dominio analizad
 Al evaluar los dominios aislados, se observa que el entorno cinemático está dominado por la Velocidad Máxima y la Varianza Espacial, mientras que el entorno acústico es dirigido en su totalidad por los Coeficientes Cepstrales (\textit{MFCCs}), demostrando la alta capacidad de estos últimos para capturar los cambios en la forma del espectro sonoro.
 
 
-Por otro lado en el modelo multimodal la unificación de las componentes cinemáticas y acústicas alcanza un grado de representación equivalente. Esto demuestra estadísticamente que las características espectrales extraídas del audio sintetizado poseen un valor analítico.Lejos de ser un mero soporte de retroalimentación para el usuario, el dominio sonoro demuestra ser un descriptor matemáticamente robusto, capturando la dispersión de los datos con el mismo peso que los descriptores cinemáticos.
+Por otro lado, en el modelo multimodal la unificación de las componentes cinemáticas y acústicas alcanza un grado de representación equivalente. Esto demuestra estadísticamente que las características espectrales extraídas del audio sintetizado poseen un valor analítico. Lejos de ser un mero soporte de retroalimentación para el usuario, el dominio sonoro demuestra ser un descriptor matemáticamente robusto, capturando la dispersión de los datos con el mismo peso que los descriptores cinemáticos.
 
 \subsubsection{Agrupamiento no supervisado}
 
@@ -302,7 +305,7 @@ Multimodal & 0.4319 & 308.33 \\ \hline
 \end{table}
 
 
-El análisis de las métricas expone que el espacio estrictamente cinemático posee la mayor separabilidad geométrica, formando agrupaciones densas y claramente distanciadas. La caída de las métricas al incorporar el dominio acústico revela que estos descriptores no son los óptimos para tareas de agrupamiento. El mantener un \textit{silhouette score} de $0.43$ se considera que los datos tienen un agrupamiento débil. Las matrices de contingencia que detallan la distribución cuantitativa de estos clústeres frente a los diferentes escenarios hemodinámicos, para los tres dominios evaluados, se encuentran documentadas en el Anexo \ref{anexo:matrices_kmeans}. 
+El análisis de las métricas expone que el espacio estrictamente cinemático posee la mayor separabilidad geométrica, formando agrupaciones densas y claramente distanciadas. La caída de las métricas al incorporar el dominio acústico revela que estos descriptores no son los óptimos para tareas de agrupamiento. Al mantener un \textit{silhouette score} de $0.43$, se considera que los datos tienen un agrupamiento débil. Las matrices de contingencia que detallan la distribución cuantitativa de estos clústeres frente a los diferentes escenarios hemodinámicos, para los tres dominios evaluados se encuentra en las Tablas \ref{tab:anexo_cinematico}, \ref{tab:anexo_acustico} y \ref{tab:anexo_multimodal} las cuales se están documentadas en el Anexo \ref{anexo:matrices_kmeans}. 
 
 \subsubsection{Validación perceptiva}
 
@@ -360,6 +363,8 @@ Para estructurar la evaluación cualitativa y comprender la evolución espacial 
 
 \subsubsection{Análisis comparativo: Aorta ascendente (plano 21)}
 
+La Figura \ref{fig:comparacion_p21} muestra la primera etapa, la cual corresponde a la trayectoria ascendente, el flujo aún no ha sido sometido a alteraciones geométricas significativas por lo que los espectrogramas son muy parecidos entre sí. Por otro lado, el audio generado tiene sutilezas entre sí, propias del flujo. Por lo que la evaluación de este plano sirve para comprender el estado hemodinámico inicial con el que el chorro ingresa al sistema en los distintos modelos.
+
 \begin{figure}[H]
     \centering
     \begin{subfigure}{0.48\textwidth}
@@ -392,11 +397,13 @@ Para estructurar la evaluación cualitativa y comprender la evolución espacial 
     \caption{\label{fig:comparacion_p21} Evolución espectral en la zona de la aorta ascendente bajo condición de estrés. Fuente: Elaboración propia.}
 \end{figure}
 
-En esta primera etapa de la trayectoria ascendente, el flujo aún no ha sido sometido a alteraciones geométricas significativas por lo que los espectrogramas son muy parecidos entre sí. Por otro lado, el audio generado tiene sutilezas entre sí, propias del flujo. Por lo que la evaluación de este plano sirve para comprender el estado hemodinámico inicial con el que el chorro ingresa al sistema en los distintos modelos.
+
 
 
 \newpage
 \subsubsection{Análisis comparativo: Arco aórtico (plano 45)}
+
+Al ingresar a la curvatura del arco aórtico, la física del fluido comienza a alterarse de manera natural, las velocidades máximas son considerablemente menores que en el plano 21, esto se puede observar en la Figura \ref{fig:comparacion_p45}. Además, escuchando detenidamente cada salida de audio, se puede percibir en un sistema estéreo la espacialización del audio (como viaja de un auricular al otro). Este plano permite validar la sensibilidad del sistema al momento de sonificar.
 
 \begin{figure}[H]
     \centering
@@ -430,10 +437,13 @@ En esta primera etapa de la trayectoria ascendente, el flujo aún no ha sido som
     \caption{\label{fig:comparacion_p45} Evolución espectral en la zona del arco aórtico bajo condición de estrés. Fuente: Elaboración propia.}
 \end{figure}
 
-Al ingresar a la curvatura del arco aórtico, la física del fluido comienza a alterarse de manera natural, las velocidades máximas son considerablemente menores que en el plano 21. Además, escuchando detenidamente cada salida de audio, se puede percibir en un sistema estéreo la espacialización del audio (como viaja de un auricular al otro). Este plano permite validar la sensibilidad del sistema al momento de sonificar.
+
 
 \newpage
 \subsubsection{Análisis comparativo: Pre-coartación (plano 53)}
+
+
+La Figura \ref{fig:comparacion_p53} muestra la sección previo a la coartación en los casos de estenosis, en esta pueden observar diferencias entre el espectrograma normal y los demás. Principalmente, se observa como en la fase de sístole se ve el ensanchamiento espectral. Además, escuchando cada salida de audio, se puede percibir la diferencia entre el caso normal y los otros, ya que no se percibe tanto la espacialización.
 
 \begin{figure}[H]
     \centering
@@ -467,10 +477,11 @@ Al ingresar a la curvatura del arco aórtico, la física del fluido comienza a a
     \caption{\label{fig:comparacion_p53} Evolución espectral en la zona pre-coartación bajo condición de estrés. Fuente: Elaboración propia.}
 \end{figure}
 
-En esta sección previo a la coartación en los casos de estenosis, se pueden observar diferencias entre el espectrograma normal y los demás. Principalmente, se observa como en la fase de sístole se ve el ensanchamiento espectral. Además, escuchando cada salida de audio, se puede percibir la diferencia entre el caso normal y los otros, ya que no se percibe tanto la espacialización.
 
 \newpage
 \subsubsection{Análisis comparativo: Zona post-coartación (plano 70)}
+
+En este último plano de estudio ilustrado en la Figura \ref{fig:comparacion_p70}, se pueden notar las grandes diferencias entre los diferentes casos. Entre estas la escala de los diferentes espectrogramas resalta, por un lado el caso de 9 mm se puede ver con maxímos de hasta 300 cm/s, mientras que para el caso normal no llega a los 100 cm/s. Además, se puede ver como el flujo es anterógrado pero produce un ensanchamiento espectral evidente. Por otro lado, escuchando cada salida de audio se puede notar como los casos con estenosis ``llenan el espacio'', es decir, en un sistema estéreo se puede escuchar por ambos auriculares la mayoría del tiempo.
 
 \begin{figure}[H]
     \centering
@@ -504,9 +515,8 @@ En esta sección previo a la coartación en los casos de estenosis, se pueden ob
     \caption{\label{fig:comparacion_p70} Evolución espectral en la zona post-coartación bajo condición de estrés. Fuente: Elaboración propia.}
 \end{figure}
 
-En este último plano de estudio, se pueden notar las grandes diferencias entre los diferentes casos. Una gran diferencia es la escala, por un lado el caso de 9 mm se puede ver con maxímos de hasta 300 cm/s, mientras que para el caso normal no llega a los 100 cm/s. Además, se puede ver como el flujo es anterógrado pero produce un ensanchamiento espectral evidente. Por otro lado, escuchando cada salida de audio se puede notar como los casos con estenosis ``llenan el espacio'', es decir, en un sistema estéreo se puede escuchar por ambos auriculares la mayoría del tiempo.
 
-Para complementar este análisis, se deja en el Anexo \ref{anexo:comparacion_casos} la comparación entre los diferentes planos para cada segmentacion, pero bajo la condición de reposo (\text{rest}). Junto con la comparación de los mismos casos, en el Anexo \ref{anexo:casos_borde} se deja la comparación de los casos bordes (plano 5 y 85) para los fantomas normal y 9 mm, en las codiciones de estrés y reposo. Además se deja un repositorio con la totalidad de los audios generados (\href{https://drive.google.com/drive/folders/1n6FfNJn5eESQtlfNskv2HZ44u8r9o8lS?usp=sharing}{link del enlace}). 
+Para complementar este análisis, se deja en el Anexo \ref{anexo:comparacion_casos}, el cual contiene las Figuras \ref{fig:anexo_comparacion_p21}, \ref{fig:anexo_comparacion_p45}, \ref{fig:anexo_comparacion_p53} y \ref{fig:anexo_comparacion_p70}. Estas figuras son la comparación entre los diferentes planos para cada segmentacion, bajo la condición de reposo (\text{rest}) ofreciendo una comparación análoga. Además, en el Anexo \ref{anexo:casos_borde} se dejan las Figuras \ref{fig:anexo_geometria_extremos}, \ref{fig:anexo_comparacion_p5} y \ref{fig:anexo_comparacion_p85}, las cuales corresponden a la geometría de los planos 5 y 85, la comparación de los casos de estos planos para los fantomas normal y 9 mm, en las condiciones de estrés y reposo. Por último, se deja un repositorio con la totalidad de los audios generados (\href{https://drive.google.com/drive/folders/1n6FfNJn5eESQtlfNskv2HZ44u8r9o8lS?usp=sharing}{link del enlace}). 
 
 
 Es a través del análisis de los diferentes planos que podemos decir que la herramienta es capaz de capturar la hemodinámica y transformarla mediante la emulación del ultrasonido Doppler, en espectrogramas y señales acústicas distinguibles y coherentes.

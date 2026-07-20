@@ -1,6 +1,6 @@
 \secnumbersection{PROPUESTA DE SOLUCIÓN}\label{ch:propuesta_solucion}
 
-El presente capítulo detalla el diseño, la estructura de la metodología y la implementación del sistema propuesto para la sonificación de datos de \textit{4D Flow MRI}. Para garantizar la escalabilidad y coherencia física de los resultados, el desarrollo de la solución no se abordó como un proceso único, sino que se fue dividido en 3 etapas, las cuales dictan la organización de este capítulo 
+El presente capítulo detalla el diseño, la estructura de la metodología y la implementación del sistema propuesto para la sonificación de datos de \textit{4D Flow MRI}. Para garantizar la escalabilidad y coherencia física de los resultados, el desarrollo de la solución no se abordó como un proceso único, sino que fue dividido en 3 etapas, las cuales dictan la organización de este capítulo.
 
 \begin{enumerate}
     \item \textbf{Exploración espacial y síntesis acústica:} Esta etapa está enfocada en el preprocesamiento de los datos anatómicos y su traducción acústica. Se detallan la integración del \textit{centerline}, su interpolación espacial, el cálculo iterativo de los planos de corte ortogonales y la formulación trigonométrica para extraer las proyecciones de velocidades. Además, se describe el motor de la síntesis digital de señales encargado de mapear la cinemática del fluido a parámetros sonoros. Todo el procesamiento se consolida dentro de una interfaz gráfica interactiva, la cual permite la inspección y exploración de los diferentes planos y sus flujos. \label{item:etapa1}
@@ -14,7 +14,7 @@ El presente capítulo detalla el diseño, la estructura de la metodología y la 
 
 La primera etapa del sistema se centra en el acondicionamiento de los datos y la configuración del motor de extracción espacial. Todo el desarrollo de esta arquitectura fue implementado en el entorno de \textit{software} MATLAB. El objetivo de esta fase es aislar secciones transversales del vaso sanguíneo para poder evaluar el comportamiento hemodinámico de forma iterativa y secuencial a lo largo de toda la estructura anatómica.
 
-\subsubsection{Interpolacíon del \textit{centerline} y cálculo de planos ortogonales}
+\subsubsection{Interpolación del \textit{centerline} y cálculo de planos ortogonales}
 
 El flujo de procesamiento se inicia con la ingesta de los datos espaciales derivados de la resonancia magnética (\textit{4D Flow MRI}). Entre los datos de entrada, el sistema recibe la segmentación anatómica del vaso y una matriz de coordenadas precalculada correspondiente al \textit{centerline}.
 
@@ -26,9 +26,12 @@ Para extraer de manera fidedigna la información hemodinámica en un punto de es
  
 La definición de este plano ortogonal se vincula directamente con el principio físico del \textbf{ángulo de insonación} ($\theta$) descrito en el marco teórico. En ultrasonido Doppler, este ángulo —formado entre el haz acústico y la dirección del flujo sanguíneo— dicta la exactitud de la velocidad medida a través del factor de corrección $\cos(\theta)$. Al diseñar el plano de corte de manera estrictamente perpendicular a la línea central del vaso, el sistema garantiza que el vector normal $\vec{N}_i$ se mantenga paralelo a la dirección principal del flujo sanguíneo. Esta decisión de diseño equivale a establecer un escenario de exploración ideal con un ángulo de insonación computacional tendiente a $0^\circ$ ($\cos(0^\circ) = 1$), lo que maximiza los valores de \textit{Doppler shift} medidos.
 
-Computacionalmente, este vector director se estima evaluando la derivada posicional mediante una aproximación de diferencias finitas con los puntos adyacentes de la curva interpolada:
+Computacionalmente, este vector director se estima evaluando la derivada posicional mediante una aproximación de diferencias finitas con los puntos adyacentes de la curva interpolada, esto se puede ver en la ecuación (\ref{eq:diferencias_finitas}).
 
-$$\vec{N}_i = P_{i+1} - P_{i-1}$$
+\begin{equation}
+    \vec{N}_i = P_{i+1} - P_{i-1}
+    \label{eq:diferencias_finitas}
+\end{equation}
 
 Donde $P_{i+1}$ y $P_{i-1}$ corresponden al punto posterior y anterior en la secuencia espacial del vaso, respectivamente. En los extremos anatómicos (el primer y el último punto), el cálculo se ajusta utilizando el punto actual y su único vecino disponible. La correcta definición del origen del plano $P_i$ y su vector normal $\vec{N}_i$ proporciona los parámetros exactos requeridos para aislar y proyectar las velocidades tridimensionales del fluido, proceso que constituye el núcleo del motor de extracción.
 
@@ -37,9 +40,9 @@ Donde $P_{i+1}$ y $P_{i-1}$ corresponden al punto posterior y anterior en la sec
 
 Una vez establecidos el origen del plano $P_i$ y su vector normal $\vec{N}_i$ en una iteración dada, el sistema normaliza este vector para obtener un vector director unitario $\hat{n}_i = \frac{\vec{N}_i}{||\vec{N}_i||}$. Este vector unitario es fundamental para garantizar que las transformaciones geométricas subsecuentes preserven las magnitudes físicas originales del fluido.
 
-Con los parámetros espaciales definidos, el sistema ejecuta la sección de las matrices volumétricas correspondientes a las tres componentes espaciales de la velocidad capturadas por el resonador ($V_x$, $V_y$, $V_z$, muchas veces representadas por $V_{RL}$, $V_{AP}$ y $V_{FH}$). Esta se implementa mediante la extracción de un corte oblicuo (\textit{oblique slice}) a través de los volúmenes tridimensionales. La matriz bidimensional resultante contiene, en cada uno de sus píxeles, un vector de velocidad tridimensional $\vec{V} = (v_x, v_y, v_z)$ que describe el movimiento del fluido en esa región transversal específica.
+Con los parámetros espaciales definidos, el sistema ejecuta la sección de las matrices volumétricas correspondientes a las tres componentes espaciales de la velocidad capturadas por el resonador ($V_x$, $V_y$, $V_z$, muchas veces representadas por $V_{RL}$, $V_{AP}$ y $V_{FH}$). Este proceso se implementa mediante la extracción de un corte oblicuo (\textit{oblique slice}) a través de los volúmenes tridimensionales. La matriz bidimensional resultante contiene, en cada uno de sus píxeles, un vector de velocidad tridimensional $\vec{V} = (v_x, v_y, v_z)$ que describe el movimiento del fluido en esa región transversal específica.
 
-Sin embargo, el realizar un corte oblicuo sobre la segmentación anatómica, la representación resultante no siempre es una región única. Con frecuencia presenta múltiples regiones aisladas o \textit{islas}. Estas discrepancias topologícas pueden ser producto de ruido inherente en la imagen, ramificaciones vasculares secundarias o vasos sanguíneos adyacentes que cruzan el mismo plano de corte.
+Sin embargo, al realizar un corte oblicuo sobre la segmentación anatómica, la representación resultante no siempre es una región única. Con frecuencia presenta múltiples regiones aisladas o \textit{islas}. Estas discrepancias topológicas pueden ser producto de ruido inherente en la imagen, ramificaciones vasculares secundarias o vasos sanguíneos adyacentes que cruzan el mismo plano de corte.
 
 Para aislar de manera efectiva la estructura de interés, el sistema implementa un algoritmo de etiquetado de componentes conexos (\textit{connected-component labeling}). Esta operación analiza la conectividad espacial de los píxeles y asigna una etiqueta discreta a cada agrupación independiente. A continuación, el algoritmo evalúa las propiedades geométricas de cada componente detectado —específicamente su área superficial y la distancia topológica hacia la coordenada interpolada de la línea central $P_i$—. Mediante este análisis, el sistema selecciona y extrae exclusivamente la componente conexa principal, descartando automáticamente cualquier artefacto o estructura vascular paralela.
 
@@ -49,9 +52,12 @@ Esta nueva máscara depurada se utiliza entonces como un filtro lógico sobre la
 
 Sin embargo, el ultrasonido Doppler no evalúa campos vectoriales tridimensionales, sino que registra únicamente la componente de la velocidad paralela al eje de insonación. Para emular computacionalmente esta restricción física y transformar el dato volumétrico en una señal unidimensional, el sistema ejecuta un proceso de proyección ortogonal en dos etapas: aislamiento escalar y recuperación de la direccionalidad.
 
-En primera instancia, el algoritmo calcula la proyección vectorial de la velocidad tridimensional sobre el vector normal unitario del plano. Matemáticamente, esto se formula extrayendo el vector proyectado $\vec{V}_{proj}$ y calculando su magnitud absoluta o norma euclidiana:
+En primera instancia, el algoritmo calcula la proyección vectorial de la velocidad tridimensional sobre el vector normal unitario del plano. Matemáticamente, esto se puede ver en la ecuación (\ref{eq:proyeccion_vectorial}), donde se extrae el vector proyectado $\vec{V}_{proj}$ y se calcula su magnitud absoluta o norma euclidiana:
 
-$$||\vec{V}_{proj}|| = ||(\vec{V} \cdot \hat{n}_i) \hat{n}_i|| = \sqrt{V_{px}^2 + V_{py}^2 + V_{pz}^2}$$
+\begin{equation}
+    ||\vec{V}_{proj}|| = ||(\vec{V} \cdot \hat{n}_i) \hat{n}_i|| = \sqrt{V_{px}^2 + V_{py}^2 + V_{pz}^2}
+    \label{eq:proyeccion_vectorial}
+\end{equation}
 
 
 Esta magnitud $||\vec{V}_{proj}||$ representa la velocidad neta del flujo a lo largo del eje, pero carece de sentido direccional al ser un valor estrictamente positivo. Para determinar si el flujo se acerca o se aleja del plano, el sistema implementa una evaluación trigonométrica. Se calcula el cociente entre el producto escalar del vector proyectado con la normal y su magnitud absoluta, limitando el resultado al rango $[-1, 1]$ para evitar inestabilidades numéricas. Al evaluar el arcoseno de este cociente, el algoritmo extrae un factor de signo correspondiente a las orientaciones ortogonales extremas ($+90^\circ$ o $-90^\circ$).
@@ -64,11 +70,14 @@ El núcleo del sistema radica en la traducción de las velocidades proyectadas h
 
 En la práctica, el espectrograma Doppler representa la distribución temporal de las velocidades del flujo. Para emular correctamente esta firma, el sistema construye una matriz espectral virtual analizando la matriz bidimensional de velocidades proyectadas a lo largo de las distintas fases del ciclo cardíaco.
 
-El proceso se inicia definiendo dinámicamente los límites de la escala de velocidad, calculando los percentiles extremos (0.5 y 99.5) de todas las mediciones transversales para descartar valores atípicos y asegurar una representación robusta. Posteriormente, para cada fase temporal temporal, se agrupan las velocidades en un histograma continuo de 128 niveles (\textit{bins}). Este conteo captura la densidad de la sangre (cantidad de vóxeles) moviéndose a cada rango de velocidad.
+El proceso se inicia definiendo dinámicamente los límites de la escala de velocidad, calculando los percentiles extremos (0.5 y 99.5) de todas las mediciones transversales para descartar valores atípicos y asegurar una representación robusta. Posteriormente, para cada fase temporal, se agrupan las velocidades en un histograma continuo de 128 niveles (\textit{bins}). Este conteo captura la densidad de la sangre (cantidad de vóxeles) moviéndose a cada rango de velocidad.
 
-Para asegurar una transición fluida en la representación visual, el algoritmo interpola las fases temporales discretas del \textit{4D Flow MRI} hacia el dominio de muestreo de audio de alta resolución mediante trazadores polinómicos (\textit{splines}). Finalmente, a la matriz resultante se le aplica una compresión no lineal mediante un factor Gamma ($\gamma = 0.65$):
+Para asegurar una transición fluida en la representación visual, el algoritmo interpola las fases temporales discretas del \textit{4D Flow MRI} hacia el dominio de muestreo de audio de alta resolución mediante trazadores polinómicos (\textit{splines}). Como se puede ver en la ecuación (\ref{eq:compresion_gamma}), a la matriz resultante se le aplica una compresión no lineal mediante un factor Gamma ($\gamma = 0.65$):
 
-$$M_{ij}' = M_{ij}^\gamma$$
+\begin{equation}
+    M_{ij}' = M_{ij}^\gamma
+    \label{eq:compresion_gamma}
+\end{equation}
 
 Esta corrección Gamma es fundamental, ya que expande visualmente las intensidades bajas del histograma, permitiendo al observador distinguir componentes de flujo sutiles que de otro modo quedarían enmascarados por las velocidades dominantes.
 
@@ -80,21 +89,34 @@ Una vez definido el \textit{Doppler shift} instantáneo, el sistema calcula la f
 
 Finalmente, la onda acústica base de cada vóxel se genera evaluando la función coseno sobre su respectiva fase acumulada ($\cos(\Phi(t))$). Esta operación transforma la cinemática aislada de la resonancia en oscilaciones mecánicas virtuales, dejándolas listas para la consolidación del sonido final. Una vez calculadas las ondas cosenoidales individuales para cada vóxel de la región transversal, el sistema consolida el audio global del plano mediante la técnica de síntesis aditiva.
 
-Previo a la sumatoria, el sistema implementa una espacialización dinámica basada en la dirección del flujo. Se utiliza una función tangente hiperbólica ($\tanh$) sobre las velocidades proyectadas para calcular coeficientes de ponderación estéreo. Este enfoque permite enrutar suavemente los flujos anterógrados (velocidades positivas) hacia el canal derecho y los flujos retrógrados (velocidades negativas) hacia el canal izquierdo, emulando la separación direccional presente en el \textit{hardware} de un ecógrafo real:
+Previo a la sumatoria, el sistema implementa una espacialización dinámica basada en la dirección del flujo. Se utiliza una función tangente hiperbólica ($\tanh$) sobre las velocidades proyectadas para calcular coeficientes de ponderación estéreo según las ecuaciones (\ref{eq:paneo_derecho}) y (\ref{eq:paneo_izquierdo}). Este enfoque permite enrutar suavemente los flujos anterógrados (velocidades positivas) hacia el canal derecho y los flujos retrógrados (velocidades negativas) hacia el canal izquierdo:
 
-$$ W_{der} = 0.5 \cdot \left(1 + \tanh(v(t))\right) $$
-$$ W_{izq} = 1 - W_{der} $$
+\begin{equation}
+    W_{der} = 0.5 \cdot \left(1 + \tanh(v(t))\right) 
+    \label{eq:paneo_derecho}
+\end{equation}
 
-La consolidación del sonido se logra multiplicando cada onda acústica individual por su respectivo peso espacial y aplicando la sumatoria a todas las componentes. Esta operación materializa la síntesis aditiva:
+\begin{equation}
+    W_{izq} = 1 - W_{der} 
+    \label{eq:paneo_izquierdo}    
+\end{equation}
 
-$$ S_{der}(t) = \sum_{i=1}^{N} \cos(\Phi_i(t)) \cdot W_{der, i} $$
-$$ S_{izq}(t) = \sum_{i=1}^{N} \cos(\Phi_i(t)) \cdot W_{izq, i} $$
+La consolidación del sonido se logra multiplicando cada onda acústica individual por su respectivo peso espacial y aplicando la sumatoria a todas las componentes. Esta operación materializa la síntesis aditiva mediante las ecuaciones (\ref{eq:sintesis_derecha}) y (\ref{eq:sintesis_izquierda}).
+
+\begin{equation}
+    S_{der}(t) = \sum_{i=1}^{N} \cos(\Phi_i(t)) \cdot W_{der, i} 
+    \label{eq:sintesis_derecha}
+\end{equation}
+\begin{equation}
+    S_{izq}(t) = \sum_{i=1}^{N} \cos(\Phi_i(t)) \cdot W_{izq, i} 
+    \label{eq:sintesis_izquierda}
+\end{equation}
 
 Previo a la etapa final de filtrado, la señal acústica debe ser moldeada para reflejar la dinámica del ciclo cardíaco. Para ello, el sistema calcula una envolvente temporal de amplitud basada en la sumatoria del flujo absoluto que atraviesa el plano transversal en cada fase. Esta curva es sometida a un suavizado gaussiano para evitar transiciones bruscas que generen clics digitales. Al multiplicar la señal de audio estéreo por esta envolvente, se garantiza que la presión sonora resultante sea directamente proporcional a la energía cinética del fluido, produciendo incrementos de volumen en sístole y atenuaciones en diástole.
 
 Para maximizar el realismo acústico, la señal es sometida a un procesamiento final de filtrado y modulación. En primer lugar, se emula el ``golpe de pared'' (\textit{Wall Thump}), un artefacto sonoro de baja frecuencia producido por la distensión mecánica de la pared vascular durante la sístole. El algoritmo calcula la aceleración global del flujo y la utiliza para modular la amplitud de una señal estocástica grave, integrando este impacto característico al audio principal.
 
-Finalmente, aplicando los principios de la síntesis sustractiva, las señales estéreo transitan por una etapa de filtrado digital discreto. Se implementan filtros tipo Butterworth de fase cero (\textit{filtfilt}) para esculpir la señal acústica sin introducir distorsiones de retardo temporal:
+Finalmente, aplicando los principios de la síntesis sustractiva, las señales estéreo transitan por una etapa de filtrado digital discreto. Se implementan filtros tipo Butterworth de fase cero (\textit{filtfilt}) \cite{Gustafsson1996} para esculpir la señal acústica sin introducir distorsiones de retardo temporal:
 
 \begin{itemize}
     \item \textbf{Filtro de pared (\textit{High Pass}):} Se aplica una frecuencia de corte de 150 Hz para suprimir componentes de muy baja frecuencia.     
@@ -102,7 +124,7 @@ Finalmente, aplicando los principios de la síntesis sustractiva, las señales e
     \item \textbf{Filtro de paso bajo (\textit{Low Pass}):} Con una frecuencia de corte fijada en 1200 Hz, este filtro actúa como un limitador de banda para suavizar la respuesta acústica y eliminar artefactos de aliasing digital. 
 \end{itemize}
 
-El resultado de esta cadena de procesamiento algorítmico es una señal estéreo bidireccional y depurada, que recrea con alta fidelidad tanto la cinemática de los datos del \textit{4D Flow MRI} como las características sonoras del ultrasonido Doppler .
+El resultado de esta cadena de procesamiento algorítmico es una señal estéreo bidireccional y depurada, que recrea con alta fidelidad tanto la cinemática de los datos del \textit{4D Flow MRI} como las características sonoras del ultrasonido Doppler.
 
 \subsubsection{Consolidación visual y exploración}
 
@@ -147,7 +169,7 @@ La segunda etapa del desarrollo consiste en transicionar de una herramienta de e
 
 \subsubsection{Procesamiento secuencial y gestión de memoria}
 
-Dada la alta dimensionalidad de los volúmenes de \textit{4D Flow MRI}, la evaluación iterativa de las diferentes secciones transversales resulta inviable de realizar manualmente. Para abordar este desafío y evitar la rápida saturación de la memoria volátil (RAM) al operar con matrices de gran tamaño, el flujo de trabajo masivo se estructuró mediante dos procesos independientes y asíncronos.
+Dada la alta dimensionalidad de los volúmenes de \textit{4D Flow MRI}, la evaluación iterativa de las diferentes secciones transversales resulta inviable de realizar manualmente. Para abordar este desafío y evitar la rápida saturación de la memoria volátil (\textit{RAM}) al operar con matrices de gran tamaño, el flujo de trabajo masivo se estructuró mediante dos procesos independientes y asíncronos.
 
 El primer proceso actúa como un orquestador de extracción geométrica. Su función es iterar secuencialmente sobre la topología del vaso, aislando la proyección de las velocidades de cada plano transversal. Estas se exportan inmediatamente al almacenamiento local en formato de arreglos binarios y liberan la memoria volátil. Este diseño transforma el modelo tridimensional pesado en un repositorio de datos fragmentado y ligero.
 
@@ -157,9 +179,12 @@ Una vez finalizada la etapa de extracción, entra en operación el segundo proce
 
 Para llevar a cabo esta cuantificación, el sistema ejecuta rutinas de parametrización encargadas de traducir los campos vectoriales y las ondas de sonido recién sintetizadas en métricas escalares concretas. Para garantizar una comparación coherente a lo largo de toda la estructura, el sistema implementa una sincronización temporal dinámica basada en el caudal volumétrico.
 
-Computacionalmente, la integración espacial del campo de velocidades se ejecuta mediante una sumatoria discreta de las magnitudes absolutas de todos los vóxeles válidos para cada fase temporal $t$:
+Computacionalmente, la integración espacial del campo de velocidades se ejecuta mediante la sumatoria discreta de las magnitudes absolutas de todos los vóxeles válidos para cada fase temporal $t$, esto se puede ver en la ecuación (\ref{eq:caudal}).
 
-$$ Q(t) = \sum_{j=1}^{N} |v_j(t)| $$
+\begin{equation}
+    Q(t) = \sum_{j=1}^{N} |v_j(t)| 
+    \label{eq:caudal}
+\end{equation}
 
 Donde $N$ es el número total de vóxeles que conforman el lumen en el plano transversal analizado, y $v_j(t)$ es la velocidad proyectada de cada vóxel. La utilización del valor absoluto en esta formulación es una consideración fundamental: garantiza que la presencia de flujos retrógrados o vórtices locales sumen a la energía cinética total de la sección en lugar de cancelarse matemáticamente con el flujo anterógrado.
 
@@ -176,13 +201,13 @@ La extracción de parámetros se divide en dos dominios complementarios:
     \item \textbf{Índice de pulsatilidad (PI):} Parámetro hemodinámico clásico calculado a partir de la evolución temporal de todo el ciclo cardíaco, relacionando la amplitud de la velocidad (sístole menos diástole) con la velocidad media del ciclo.
 \end{itemize}
 
-\textbf{Métricas de la señal digital:} Aprovechando el motor de síntesis, las proyecciones espaciales se transforman en señales de audio. Para estandarizar el análisis, la señal es truncada a una ventana de observación correspondiente a exactamente un ciclo cardíaco. Sobre esta onda modulada se extraen los siguientes descriptores de audio digital:
+\textbf{Métricas de la señal digital:} Aprovechando el motor de síntesis, las proyecciones espaciales se transforman en señales de audio. Para estandarizar el análisis, la señal es truncada a una ventana de observación correspondiente a exactamente un ciclo cardíaco. Sobre esta onda modulada se extraen diferentes descriptores de la señal de audio \cite{Davis1980,Tzanetakis2002}:
 \begin{itemize}
-    \item \textbf{Dominio del tiempo:} Se calcula la energía de la señal (\textit{RMS}) y la tasa de cruces por cero (\textit{Zero-Crossing Rate, ZCR}). Estas variables traducen la presión sonora aparente y la densidad de fluctuaciones de la señal acústica\cite{eronen2000musical}.
+    \item \textbf{Dominio del tiempo:} Se calcula la energía de la señal (\textit{RMS}) y la tasa de cruces por cero (\textit{Zero-Crossing Rate, ZCR}). Estas variables traducen la presión sonora aparente y la densidad de fluctuaciones de la señal acústica.
     
     \item \textbf{Dominio de la frecuencia:} Mediante la Transformada Rápida de Fourier (FFT), se proyecta la señal sonora a su espectro de frecuencias para derivar su centroide espectral y su dispersión espectral (\textit{Spectral Spread}). Estas variables modelan matemáticamente el ensanchamiento espectral (\textit{Spectral Broadening}).
     
-    \item \textbf{Coeficientes cepstrales en las frecuencias de Mel (MFCC 1 al 3):} Descriptores fundamentales en el reconocimiento de patrones sonoros. Al aplicar un banco de filtros espaciados según la escala Mel, se modela la resolución no lineal de la audición humana. La extracción de estos coeficientes permite cuantificar el ``timbre'' del flujo\cite{zheng2015heart}.
+    \item \textbf{Coeficientes cepstrales en las frecuencias de Mel (MFCC 1 al 3):} Descriptores fundamentales en el reconocimiento de patrones sonoros. Al aplicar un banco de filtros espaciados según la escala Mel, se modela la resolución no lineal de la audición humana. La extracción de estos coeficientes permite cuantificar el ``timbre'' del flujo.
 \end{itemize}
 
 La extracción sistemática de estas métricas genera una matriz de datos que unifica las características cinemáticas del flujo con su firma acústica. Esta matriz representa un conjunto de datos estructurados o \textit{dataset}. El detalle de las variables consolidadas en este conjunto, agrupadas según su dominio de origen, se expone en la Tabla \ref{tab:resumen_metricas}.
@@ -213,21 +238,19 @@ Coeficientes de Mel (\texttt{WAV\_MFCC1} a \texttt{MFCC3}) & Acústica \\
 
 \subsection{Análisis cuantitativo y exploración interactiva}
 
-La etapa final consiste en establecer un esquema de evaluación sobre el espacio de características multimodal. Con este fin, se desarrolla una herramienta de análisis comparativo. El objetivo de esta implementación es contar con un mecanismo objetivo para comprobar si la traducción cinemática-acústica es efectiva, y evidenciar si las alteraciones del flujo sanguíneo generan, bajo los criterios de sonificación establecidos, firmas sonoras predecibles y distinguibles.
+La etapa final consiste en establecer un esquema de evaluación sobre el espacio de características multimodal. Con este fin, se desarrolla una herramienta de análisis comparativo, para así contar con un mecanismo objetivo para comprobar si la traducción cinemática-acústica es efectiva, y evidenciar si las alteraciones del flujo sanguíneo generan, bajo los criterios de sonificación establecidos, firmas sonoras predecibles y distinguibles.
 
 \subsubsection{Agrupamiento estadístico y análisis de importancia}
 
-Para evaluar matemáticamente la capacidad de discriminación del \textit{dataset} construido, se implementa una etapa de aprendizaje automático no supervisado. El análisis se aborda mediante la ejecución del algoritmo de agrupamiento $K$-Means, configurado para particionar los datos en $k$ clústeres. Con el fin de aislar el peso predictivo de cada dominio, el agrupamiento se itera sobre tres subconjuntos independientes: un espacio estrictamente cinemático, un espacio puramente acústico y el espacio multimodal fusionado
+Para evaluar matemáticamente la capacidad de discriminación del \textit{dataset} construido, se implementa una etapa de aprendizaje automático no supervisado. El análisis se aborda mediante la ejecución del algoritmo de agrupamiento $K$-Means \cite{Jain2010}, configurado para particionar los datos en $k$ clústeres. Con el fin de aislar el peso predictivo de cada dominio, el agrupamiento se itera sobre tres subconjuntos independientes: un espacio estrictamente cinemático, un espacio puramente acústico y el espacio multimodal fusionado
 
-La validación de los clústeres descubiertos se estructura en dos niveles. A nivel interno, se cuantifica la cohesión y separación de los grupos utilizando el coeficiente de \textit{Silhouette} y el índice de Calinski-Harabasz. A nivel externo, se generan tablas de contingencia (\textit{cross-tables}) que cruzan las asignaciones del algoritmo con los metadatos inherentes a cada registro, es decir, el identificador del modelo físico y la condición de flujo simulada. Este cruce permite evaluar si las agrupaciones descubiertas logran segmentar de forma natural los diferentes escenarios clínicos abordados.
+La validación de los clústeres descubiertos se estructura en dos niveles. A nivel interno, se cuantifica la cohesión y separación de los grupos utilizando el coeficiente de \textit{Silhouette} \cite{Rousseeuw1987} y el índice de Calinski-Harabasz \cite{Calinski1974}. A nivel externo, se generan tablas de contingencia (\textit{cross-tables}) que cruzan las asignaciones del algoritmo con los metadatos inherentes a cada registro, es decir, el identificador del modelo físico y la condición de flujo simulada. Este cruce permite evaluar si las agrupaciones descubiertas logran segmentar de forma natural los diferentes escenarios clínicos abordados.
 
-Adicionalmente, para comprender la contribución de cada variable en la formación de estos patrones, se aplica un Análisis de Componentes Principales (PCA). La extracción de los pesos absolutos del primer componente principal ($PC_1$) permite identificar cuáles descriptores actúan como los marcadores de varianza más fuertes dentro del modelo no supervisado.
+Adicionalmente, para comprender la contribución de cada variable en la formación de estos patrones, se aplica un Análisis de Componentes Principales (PCA) \cite{Jolliffe2016}. La extracción de los pesos absolutos del primer componente principal ($PC_1$) permite identificar cuáles descriptores actúan como los marcadores de varianza más fuertes dentro del modelo no supervisado.
 
 \subsubsection{Exploración interactiva}
 
-Con el fin de comparar diferentes instancias de sonificación y síntesis espectral, se genera un \textit{dashboard} interactivo. Esta interfaz se vincula directamente con las etapas anteriores. De la primera etapa hereda la reconstrucción geómetrica del vaso y la discretización espacial mediante la interpolación del \textit{centerline}. De la segunda etapa, se reutiliza las matrices guardadas en formato binario y el algoritmo de emulación Doppler. 
-
-El \textit{dashboard} utiliza estos elementos para generar pruebas comparativas entre diferentes escenarios anatómicos o estados de flujo.
+Con el fin de comparar diferentes instancias de sonificación y síntesis espectral, se genera un \textit{dashboard} interactivo. Esta interfaz se vincula directamente con las etapas anteriores. De la primera etapa hereda la reconstrucción geómetrica del vaso y la discretización espacial mediante la interpolación del \textit{centerline}. De la segunda etapa, se reutilizan las matrices guardadas en formato binario y el algoritmo de emulación Doppler. 
 
 El \textit{dashboard} (ver Figura \ref{fig:dashboard}) utiliza estos elementos para generar pruebas comparativas simultáneas (\textit{A/B testing}) entre diferentes escenarios anatómicos o estados de flujo. Para articular analíticamente estas comparaciones, el entorno sincroniza tres dimensiones operativas principales:
 
@@ -247,3 +270,4 @@ El \textit{dashboard} (ver Figura \ref{fig:dashboard}) utiliza estos elementos p
 \end{figure}
 
 La relevancia de este entorno comparativo radica en su función como plataforma de evaluación perceptual. Al sincronizar la geometría del vaso con las señales sintetizadas, el sistema facilita un análisis directo de los datos procesados. Este acoplamiento es el que permite contrastar los diferentes estados de flujo y confirmar si la parametrización matemática de la hemodinámica se traduce exitosamente en marcadores sonoros reconocibles para un evaluador.
+

@@ -9,26 +9,45 @@
 \newcommand{\titulo}{Metodología para la caracterización auditiva del flujo sanguíneo mediante el análisis de datos 4D Flow MRI}
 \newcommand{\ciudad}{Santiago} % e.g. Valparaíso
 % TODO: Consultar el formato de los nombres:
-\newcommand{\nombrealumno}{Nicolás Antonio Rodríguez Berrios}
+\newcommand{\nombrealumno}{Nicolás Rodríguez Berrios}
 \newcommand{\nombreprofesor}{Julio Sotelo}
-\newcommand{\nombrecorreferente}{Nombre del correferente}
+\newcommand{\nombrecorreferente}{Joaquín Mura}
 % Mes y año del examen
 \newcommand{\mesexamen}{Julio}
 \newcommand{\anioexamen}{2026}
 % Dedicatoria y agradecimientos
 \newcommand{\dedicatoria}{
-Considerando lo importancia de este trabajo para los alumnos, este apartado es para que el autor entregue palabras personales para dedicar este documento. La extensión puede ser de máximo una hoja y se deben mantener este formato, tipo y tamaño de letra.
+
+A mi mamá y abuela, por la preocupación y el apoyo, porque sin ellas no sería lo que soy.
+
+A los profesores que han influido positivamente en mi vida, en especial a mi profesor jefe de primero medio y de matemáticas en el colegio, que sin sus palabras y apoyo no hubiera tomado este camino.
+
+A mi yo de niño, que nunca soñó con llegar a este instante, hemos sufrido y sido felices pero estamos aquí, avanzando y siguiendo.
+
+A todos lo niños de la ``pobla'' que sueñan con salir de ahí, el futuro puede ser incierto, pero luchar y seguir adelante es tal vez la única forma que existe.
+
+% Considerando lo importancia de este trabajo para los alumnos, este apartado es para que el autor entregue palabras personales para dedicar este documento. La extensión puede ser de máximo una hoja y se deben mantener este formato, tipo y tamaño de letra.
+
 }
 \newcommand{\agradecimientos}{
-Considerando la importancia de este trabajo para los alumnos, este apartado se podrá incluir en el caso de que el autor desee agradecer a las personas que facilitaron alguna ayuda relevante en su trabajo para la realización de este documento. La extensión puede ser de máximo una hoja y se deben mantener este formato, tipo y tamaño de letra.
+
+En agradecimientos a mi mamá y mi abuela, que me dieron todo en la vida y facilitaron mi vida como estudiante. A mis tías que se preocuparon por mi cuando fue necesario. A mi prima mayor, que con su ejemplo me mostró lo que debía hacer para sacar la carrera adelante.
+
+A mi profesor guía, gracias por tomar mi primera idea de memoria y mostrarme otro camino equivalente, por la buena disposición y el acompañamiento a lo largo de este camino, este viaje de aprendizaje y desarrollo me ha hecho feliz.
+
+A los profesores que influyeron positivamente en este camino, siempre me acordaré de todo el bien que me aportaron.
+
+A mis amigos de la universidad que a través de salidas, tiempo de estudio, almuerzos y más cosas, hicieron más ameno el paso por esta. A mis amigos de la vida que me han dado su apoyo a lo largo de los años, en especial cuando no creía en este instante.
+ 
+%Considerando la importancia de este trabajo para los alumnos, este apartado se podrá incluir en el caso de que el autor desee agradecer a las personas que facilitaron alguna ayuda relevante en su trabajo para la realización de este documento. La extensión puede ser de máximo una hoja y se deben mantener este formato, tipo y tamaño de letra.
 }
 \newcommand{\resumen}{
-La Resonancia Magnética de Flujo 4D (\textit{4D Flow MRI}) proporciona una cuantificación espaciotemporal de la hemodinámica cardiovascular. Sin embargo, su análisis tradicional recae exclusivamente en representaciones visuales que desaprovechan la sensibilidad innata del sistema auditivo humano para discriminar frecuencias y patrones. Para abordar esta limitación, el presente trabajo propone el diseño e implementación de una metodología computacional para la sonificación de adquisiciones \textit{4D Flow MRI}. Este sistema extrae la cinemática del fluido a lo largo de su \textit{centerline} anatómico y y lo traduce en señales acústicas, tomando como base los principios de representación espectral del ultrasonido Doppler. La validación empírica se realizó sobre fantomas bajo distintas severidades de estenosis y condiciones de flujo (reposo y estrés). Los resultados evidencian que el sistema traduce exitosamente diferentes entradas hemodinámicas en firmas acústicas coherentes. La evaluación estadística mediante Análisis de Componentes Principales (\textit{PCA}) demostró que los descriptores espectrales extraídos (\textit{MFCCs}) poseen un peso analítico equivalente a las variables cinemáticas tradicionales. Aunque el análisis de agrupamiento (\textit{K-Means}) indicó que la integración del dominio sonoro aumenta la complejidad topológica de los datos, la metodología valida al sonido como un descriptor robusto. Así, la sonificación se consolida como una herramienta analítica complementaria, capaz de traducir la complejidad hemodinámica estructural en información perceptiva.
+La Resonancia Magnética de Flujo 4D (\textit{4D Flow MRI}) proporciona una cuantificación espaciotemporal de la hemodinámica cardiovascular. Sin embargo, su análisis tradicional recae exclusivamente en representaciones visuales que desaprovechan la sensibilidad innata del sistema auditivo humano para discriminar frecuencias y patrones. Para abordar esta limitación, el presente trabajo propone el diseño e implementación de una metodología computacional para la sonificación de adquisiciones \textit{4D Flow MRI}. Este sistema extrae la cinemática del fluido a lo largo de su \textit{centerline} anatómico y la traduce en señales acústicas, tomando como base los principios de representación espectral del ultrasonido Doppler. La validación empírica se realizó sobre fantomas bajo distintas severidades de estenosis y condiciones de flujo (reposo y estrés). Los resultados evidencian que el sistema traduce exitosamente diferentes entradas hemodinámicas en firmas acústicas coherentes. La evaluación estadística mediante Análisis de Componentes Principales (\textit{PCA}) demostró que los descriptores espectrales extraídos (\textit{MFCCs}) poseen un peso analítico equivalente a las variables cinemáticas tradicionales. Aunque el análisis de agrupamiento (\textit{K-Means}) indicó que la integración del dominio sonoro aumenta la complejidad topológica de los datos, la metodología valida al sonido como un descriptor robusto. Así, la sonificación se consolida como una herramienta analítica complementaria, capaz de traducir la complejidad hemodinámica estructural en información perceptiva.
 }
 
 
 \newcommand{\resumeningles}{
-Four-dimensional Flow Magnetic Resonance Imaging (\textit{4D Flow MRI}) provides a spatiotemporal quantification of cardiovascular hemodynamics. However, its traditional analysis relies exclusively on visual representations, which underutilize the innate sensitivity of the human auditory system to discriminate frequencies and patterns. To address this limitation, the present work proposes the design and implementation of a computational methodology for the sonification of \textit{4D Flow MRI} acquisitions. This system extracts fluid kinematics along its anatomical \textit{centerline} and translates them into acoustic signals, based on the spectral representation principles of Doppler ultrasound. Empirical validation was performed on phantoms under different severities of stenosis and flow conditions (rest and stress). The results demonstrate that the system successfully translates different hemodynamic inputs into coherent acoustic signatures. Statistical evaluation using Principal Component Analysis (\textit{PCA}) demonstrated that the extracted spectral descriptors (\textit{MFCCs}) possess an analytical weight equivalent to traditional kinematic variables. Although clustering analysis (\textit{K-Means}) indicated that the integration of the sound domain increases the topological complexity of the data, the methodology validates sound as a robust descriptor. Thus, sonification is consolidated as a complementary analytical tool, capable of translating structural hemodynamic complexity into perceptual information.
+Four-dimensional Flow Magnetic Resonance Imaging (\textit{4D Flow MRI}) provides a spatiotemporal quantification of cardiovascular hemodynamics. However, its traditional analysis relies exclusively on visual representations, which underutilize the innate sensitivity of the human auditory system to discriminate frequencies and patterns. To address this limitation, the present work proposes the design and implementation of a computational methodology for the sonification of \textit{4D Flow MRI} acquisitions. This system extracts fluid kinematics along its anatomical \textit{centerline} and translates them into acoustic signals, based on the spectral representation principles of Doppler ultrasound. Empirical validation was performed on phantoms under different severities of stenosis and flow conditions (rest and stress). The results demonstrate that the system successfully translates different hemodynamic inputs into coherent acoustic signatures. Statistical evaluation using Principal Component Analysis (\textit{PCA}) demonstrated that the extracted spectral descriptors (\textit{MFCCs}) possess an analytical weight equivalent to traditional kinematic variables. Although clustering analysis (\textit{K-Means}) indicated that the integration of the sound domain increases the topological complexity of the data, the methodology validates sound as a robust descriptor. Thus, sonification establishes itself as a complementary analytical tool, capable of translating structural hemodynamic complexity into perceptual information.
 }
 \newcommand{\palabrasclave}{
 Sonificación; 4D Flow MRI; Hemodinámica; Ultrasonido Doppler.    
